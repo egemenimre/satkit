@@ -15,19 +15,25 @@ The documentation for satkit is here: <https://satkit.readthedocs.io/>
 As a quick-start, you can find some hands-on Jupyter examples in the [tutorials directory](https://github.com/egemenimre/satkit/tree/master/docs/tutorials) (or in the [documentation](https://satkit.readthedocs.io/en/latest/tutorials.html) for a text version).
 
 
-## Installing satkit
+[//]: # (## Installing satkit)
 
-The satkit package is on [PyPI](https://pypi.org/project/satkit/) and you can install it simply by running:
+[//]: # ()
+[//]: # (The satkit package is on [PyPI]&#40;https://pypi.org/project/satkit/&#41; and you can install it simply by running:)
 
-    pip install satkit
+[//]: # ()
+[//]: # (    pip install satkit)
 
-You can also install it via [conda-forge](https://github.com/conda-forge/satkit-feedstock):
+[//]: # ()
+[//]: # (You can also install it via [conda-forge]&#40;https://github.com/conda-forge/satkit-feedstock&#41;:)
 
-    conda install -c conda-forge satkit
+[//]: # ()
+[//]: # (    conda install -c conda-forge satkit)
 
-Do not install `satkit` using `sudo`.
+[//]: # ()
+[//]: # (Do not install `satkit` using `sudo`.)
 
-You can find the source code on GitHub: <https://github.com/egemenimre/satkit>
+[//]: # ()
+[//]: # (You can find the source code on GitHub: <https://github.com/egemenimre/satkit>)
 
 
 ## Requirements
