@@ -7,19 +7,18 @@
 TLE class tests.
 
 """
-import pytest
-import orekit
-from pytest import approx
-from orekit.pyhelpers import setup_orekit_curdir
 from pathlib import Path
 
+import pytest
+from orekit.pyhelpers import setup_orekit_curdir
 from org.orekit.bodies import OneAxisEllipsoid
 from org.orekit.frames import FramesFactory
 from org.orekit.propagation.analytical.tle import TLE, TLEPropagator
 from org.orekit.time import AbsoluteDate, TimeScalesFactory
-from org.orekit.utils import IERSConventions, Constants
+from org.orekit.utils import Constants, IERSConventions
+from pytest import approx
 
-from satkit import u, process_paths
+from satkit import process_paths, u
 from satkit.propagation.tle import TleFactory
 
 extra_path = Path(
