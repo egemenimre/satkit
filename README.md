@@ -1,4 +1,4 @@
-# satkit: Satellite Mission Analysis and Design
+# satkit: Satellite Mission Analysis and Design (based on Orekit)
 
 [![CircleCI Status](https://img.shields.io/circleci/build/github/egemenimre/satkit/master?logo=circleci&label=CircleCI)](https://circleci.com/gh/egemenimre/satkit)
 [![Codecov Status](https://codecov.io/gh/egemenimre/satkit/branch/master/graph/badge.svg)](https://codecov.io/gh/egemenimre/satkit)
