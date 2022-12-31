@@ -5,7 +5,7 @@ jobs:
 
   tests:
     docker:
-      - image: circleci/python:3.10
+      - image: cimg/python:3.10.8
     parallelism: 4
 
     steps:
@@ -25,7 +25,7 @@ jobs:
 
   codestyle:
     docker:
-      - image: circleci/python:3.10
+      - image: cimg/python:3.10.8
     steps:
       - checkout
 #      - run:
