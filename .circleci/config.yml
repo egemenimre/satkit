@@ -1,11 +1,12 @@
-# Python CircleCI 2.0 configuration file
-version: 2
+# Python CircleCI 2.1 configuration file
+version: 2.1
 
 jobs:
 
   tests:
     docker:
       - image: circleci/python:3.9
+    parallelism: 4
 
     steps:
       - checkout
@@ -45,7 +46,6 @@ jobs:
 #          path: docs/_build/html
 
 workflows:
-  version: 2
   tests_and_codestyle:
     jobs:
       - codestyle
