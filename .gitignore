@@ -137,3 +137,5 @@ dmypy.json
 
 # Other temporary stuff
 satkit/temp
+/data/orekit-data/orekit-data-master.zip
+/data/orekit-data/orekit-data-reference.zip
