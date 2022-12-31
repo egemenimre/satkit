@@ -5,7 +5,7 @@ jobs:
 
   tests:
     docker:
-      - image: cimg/python:3.10.8
+      - image: cimg/python:3.10
     parallelism: 4
 
     steps:
@@ -25,7 +25,7 @@ jobs:
 
   codestyle:
     docker:
-      - image: cimg/python:3.10.8
+      - image: cimg/python:3.10
     steps:
       - checkout
 #      - run:
