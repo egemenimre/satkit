@@ -10,10 +10,10 @@ Satellite Mission Analysis and Design in Python.
 """
 __version__ = "0.0.1"
 
-from pint import UnitRegistry
-import orekit
 from pathlib import Path
 
+import orekit
+from pint import UnitRegistry
 
 # init unit registry
 u = UnitRegistry()
