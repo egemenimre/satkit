@@ -20,7 +20,9 @@ jobs:
 #            - .
 
   codestyle:
-    executor: python/default # use the default executor defined within the orb
+#    executor: python/default # use the default executor defined within the orb
+    docker:
+      - image: continuumio/miniconda3
     steps:
       # Get repo from GitHub
       - checkout
