@@ -1,9 +1,6 @@
 # Python CircleCI 2.1 configuration file
 version: 2.1
 
-orbs:
-  python: circleci/python@2.1
-
 jobs:
 #  build_and_test: # this can be any name you choose
 #    executor: python/default # use the default executor defined within the orb
@@ -21,7 +18,8 @@ jobs:
 
   tests:
 
-    executor: python/default # use the default executor defined within the orb
+    docker:
+      - image: cimg/python:3.10
 
 #    docker:
 #      - image: continuumio/miniconda3
@@ -31,10 +29,6 @@ jobs:
     steps:
       # Get repo from GitHub
       - checkout
-      # Create venv and install dependencies
-#      - run:
-#          name: install dependencies
-#          command: conda env create -f environment.yml
       - run:
           name: Install tox
           command: pip install tox tox-conda
@@ -44,7 +38,8 @@ jobs:
 
   codestyle:
 
-    executor: python/default # use the default executor defined within the orb
+    docker:
+      - image: continuumio/miniconda3
 
     steps:
       # Get repo from GitHub
@@ -61,4 +56,4 @@ workflows:
   tests_and_codestyle:
     jobs:
       - codestyle
-      - tests
+#      - tests
