@@ -1,4 +1,0 @@
-numpy
-orekit
-pint
-matplotlib

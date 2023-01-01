@@ -1,0 +1,9 @@
+name: satkit
+channels:
+  - conda-forge
+dependencies:
+  - orekit
+  - pint
+  - numpy
+  - scipy
+  - matplotlib
