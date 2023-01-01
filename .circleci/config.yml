@@ -19,19 +19,16 @@ jobs:
   tests:
 
     docker:
-      - image: cimg/python:3.10
+      - image: continuumio/miniconda3
 
-#    docker:
-#      - image: continuumio/miniconda3
-#
-#    parallelism: 4
+    parallelism: 4
 
     steps:
       # Get repo from GitHub
       - checkout
       - run:
           name: Install tox
-          command: pip install tox tox-conda
+          command: pip install tox
       - run:
           name: Run tests
           command: tox -e py310
@@ -56,4 +53,4 @@ workflows:
   tests_and_codestyle:
     jobs:
       - codestyle
-#      - tests
+      - tests
