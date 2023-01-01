@@ -19,17 +19,31 @@ jobs:
 #          paths:
 #            - .
 
+#  codestyle:
+##    executor: python/default # use the default executor defined within the orb
+#    docker:
+#      - image: continuumio/miniconda3
+#    steps:
+#      # Get repo from GitHub
+#      - checkout
+#      # Create venv and install dependencies
+#      - run:
+#          name: install dependencies
+#          command: conda env create -f environment.yml
+#      - run:
+#          name: Make sure style checks pass
+#          command: tox -e codestyle
+
   codestyle:
-#    executor: python/default # use the default executor defined within the orb
-    docker:
-      - image: continuumio/miniconda3
+    executor: python/default # use the default executor defined within the orb
+
     steps:
       # Get repo from GitHub
       - checkout
       # Create venv and install dependencies
       - run:
-          name: install dependencies
-          command: conda env create -f environment.yml
+          name: Install Python dependencies
+          command: pip install tox --user
       - run:
           name: Make sure style checks pass
           command: tox -e codestyle
