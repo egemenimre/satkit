@@ -9,7 +9,7 @@ dependencies:
   - matplotlib
   # dev dependencies
   - pytest
-  - pytest-cov
+  - coverage
   - pytest-xdist
   - black
   - isort
