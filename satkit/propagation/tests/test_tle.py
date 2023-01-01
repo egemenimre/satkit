@@ -53,6 +53,22 @@ def tle_geo(tle_geo_lines):
     return TLE(tle_geo_lines[0], tle_geo_lines[1])
 
 
+@pytest.fixture
+def tle_sso_lines():
+    """Test Fixture with TLE for SSO repeat groundtrack."""
+    # SENTINEL 2A
+    line1 = "1 40697U 15028A   20164.50828565  .00000010  00000-0  20594-4 0  9999"
+    line2 = "2 40697  98.5692 238.8182 0001206  86.9662 273.1664 14.30818200259759"
+
+    return line1, line2
+
+
+@pytest.fixture
+def init_tle_sso(tle_sso_lines):
+    """Generates the TLE with SSO repeat groundtrack test setup."""
+    return TLE(tle_sso_lines[0], tle_sso_lines[1])
+
+
 def test_init_geo(tle_geo):
     """Test init GEO satellite.
 
