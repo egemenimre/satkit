@@ -2,19 +2,6 @@
 version: 2.1
 
 jobs:
-#  build_and_test: # this can be any name you choose
-#    executor: python/default # use the default executor defined within the orb
-#    steps:
-#      - checkout # checkout source code
-#      - python/install-packages:
-#          pkg-manager: pip
-#      - run:
-#          name: Run tests
-#          command: python -m pytest
-#      - persist_to_workspace:
-#          root: ~/project
-#          paths:
-#            - .
 
   tests:
 
@@ -29,6 +16,10 @@ jobs:
       - run:
           name: Install tox
           command: pip install tox
+#      # Create venv and install dependencies
+#      - run:
+#          name: install dependencies
+#          command: conda env create -f environment.yml
       - run:
           name: Run tests
           command: tox -e py310
@@ -44,7 +35,7 @@ jobs:
       # Create venv and install dependencies
       - run:
           name: Install Python dependencies
-          command: pip install tox tox-conda
+          command: pip install tox
       - run:
           name: Make sure style checks pass
           command: tox -e codestyle
