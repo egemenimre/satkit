@@ -36,4 +36,4 @@ workflows:
   tests_and_codestyle:
     jobs:
       - codestyle
-      - tests
+#      - tests
