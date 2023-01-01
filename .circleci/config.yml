@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Install tox
           command: pip install tox
-#      # Create venv and install dependencies
+#      # Create venv and install dependencies - not needed as the docker image is miniconda
 #      - run:
 #          name: install dependencies
 #          command: conda env create -f environment.yml
