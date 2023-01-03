@@ -19,7 +19,7 @@ from org.orekit.utils import Constants, IERSConventions
 from pytest import approx
 
 from satkit import process_paths, u
-from satkit.propagation.tle import TleFactory
+from satkit.propagation.tle import TleFactory, TLEUtils
 
 extra_path = Path(
     "..",
@@ -42,15 +42,10 @@ def setup_module():
 @pytest.fixture
 def tle_geo_lines():
     """Test Fixture with GEO TLE."""
+    # TURKSAT 4A
     line1 = "1 39522U 14007A   20162.50918981  .00000000  00000-0  00000-0 0  9995"
     line2 = "2 39522   0.0000 124.6158 0000000   0.0000   0.0000  1.00273791 23487"
     return line1, line2
-
-
-@pytest.fixture
-def tle_geo(tle_geo_lines):
-    """Generates the GEO TLE test setup."""
-    return TLE(tle_geo_lines[0], tle_geo_lines[1])
 
 
 @pytest.fixture
@@ -64,7 +59,13 @@ def tle_sso_lines():
 
 
 @pytest.fixture
-def init_tle_sso(tle_sso_lines):
+def tle_geo(tle_geo_lines):
+    """Generates the GEO TLE test setup."""
+    return TLE(tle_geo_lines[0], tle_geo_lines[1])
+
+
+@pytest.fixture
+def tle_sso(tle_sso_lines):
     """Generates the TLE with SSO repeat groundtrack test setup."""
     return TLE(tle_sso_lines[0], tle_sso_lines[1])
 
@@ -109,3 +110,50 @@ def test_init_geo(tle_geo):
 
     assert longitude == approx(lla.getLongitude(), abs=5e-3 * u.deg)
     assert str(tle_geo) == str(tle)
+
+
+def test_init_sso(tle_sso):
+    """Test init Sun-synchronous satellite."""
+
+    epoch = tle_sso.getDate()
+
+    # sma and altitude in meters
+    sma = TLEUtils.compute_sma(tle_sso)
+    alt = sma - Constants.WGS84_EARTH_EQUATORIAL_RADIUS * u.m
+
+    # Sentinel-2A has an LTAN of 22:30
+    ltan = 22.5
+
+    tle = TleFactory.init_sso(
+        epoch,
+        alt,
+        ltan,
+        eccentricity=tle_sso.getE(),
+        arg_perigee=tle_sso.getPerigeeArgument(),
+        mean_anomaly=tle_sso.getMeanAnomaly(),
+        bstar=tle_sso.getBStar(),
+        launch_year=tle_sso.getLaunchYear(),
+        launch_nr=tle_sso.getLaunchNumber(),
+        launch_piece=tle_sso.getLaunchPiece(),
+        sat_num=tle_sso.getSatelliteNumber(),
+        classification=tle_sso.getClassification(),
+        rev_nr=tle_sso.getRevolutionNumberAtEpoch(),
+        el_nr=tle_sso.getElementNumber(),
+    )
+
+    print("")
+    print(tle_sso)
+    print(tle)
+
+    # print(tle_sso.node_rotation_rate())
+    # print(tle.node_rotation_rate())
+
+    # print((tle_sso.getRaan() * u.rad).to("deg"))
+    # print((tle.getRaan() * u.rad).to("deg"))
+
+    assert TLEUtils.compute_sma(tle).m_as("m") == approx(
+        TLEUtils.compute_sma(tle_sso).m_as("m"), abs=(5e-5 * u.mm).m_as("m")
+    )
+    assert tle.getI() == approx(tle_sso.getI(), abs=(8e-5 * u.deg).m_as("rad"))
+
+    assert tle.getRaan() == approx(tle_sso.getRaan(), abs=(0.045 * u.deg).m_as("rad"))

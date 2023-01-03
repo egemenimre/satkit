@@ -9,9 +9,12 @@ TLE helper functions and factory.
 import numpy as np
 from org.orekit.frames import FramesFactory
 from org.orekit.propagation.analytical.tle import TLE
-from org.orekit.time import AbsoluteDate
+from org.orekit.time import AbsoluteDate, TimeScalesFactory
+from org.orekit.utils import Constants
+from pint import Quantity
 
 from satkit import u
+from satkit.propagation.orbits import OrbitUtils
 
 
 class TleFactory:
@@ -36,15 +39,15 @@ class TleFactory:
     @staticmethod
     def init_geo(
         epoch: AbsoluteDate,
-        longitude,
-        launch_year=2000,
-        launch_nr=1,
-        launch_piece="A",
-        sat_num=99999,
-        classification="U",
-        rev_nr=0,
-        el_nr=1,
-    ):
+        longitude: float | Quantity,
+        launch_year: int = 2000,
+        launch_nr: int = 1,
+        launch_piece: str = "A",
+        sat_num: int = 99999,
+        classification: str = "U",
+        rev_nr: int = 0,
+        el_nr: int = 1,
+    ) -> TLE:
         """
         Initialises a geostationary satellite TLE.
 
@@ -103,6 +106,7 @@ class TleFactory:
 
         eph_type = 0
 
+        # all Quantity values converted to values by now
         tle = TLE(
             sat_num,
             classification,
@@ -125,3 +129,253 @@ class TleFactory:
         )
 
         return tle
+
+    @staticmethod
+    def init_sso(
+        epoch: AbsoluteDate,
+        altitude: float | Quantity,
+        ltan: float | Quantity,
+        eccentricity: float = 0.0,
+        arg_perigee: float | Quantity = 0.0 * u.deg,
+        mean_anomaly: float | Quantity = 0.0 * u.deg,
+        bstar: float = 0.0,
+        launch_year: int = 2000,
+        launch_nr: int = 1,
+        launch_piece: str = "A",
+        sat_num: int = 99999,
+        classification: str = "U",
+        rev_nr: int = 0,
+        el_nr: int = 1,
+    ) -> TLE:
+        """
+        Initialises a sun-synchronous Earth orbit TLE.
+
+        Sets the inclination in accordance with the target node rotation rate that
+        satisfies sun-synchronous conditions up to J4. Sets the RAAN in accordance
+        with the requested Local Time of the Ascending Node (LTAN).
+
+        Target node rotation rate is 360 deg / 365.2421897 days (See
+        Fundamentals of Astrodynamics Vallado 4th ed pg. 863).
+        The node rotation rate is calculated via a J4 secular drift rate (See
+        Fundamentals of Astrodynamics Vallado 4th ed pg. 650).
+
+        Equations use WGS84 parameters for Earth equator radius and mu.
+        J2 and J4 are from EGM96.
+
+        Parameters
+        ----------
+        epoch : AbsoluteDate
+            Epoch Time corresponding to the orbital elements (nominally very near
+            the time of true ascending node passage)
+        altitude : float or Quantity
+            altitude above `earth_radius` around Equator [m]
+        ltan : float
+            Local Time of the Ascending Node defined as [0, 24)
+        eccentricity : float
+            mean eccentricity of the orbit [dimensionless]
+        arg_perigee : float or Quantity
+            TEME mean argument of perigee [rad]
+        mean_anomaly : float or Quantity
+            mean anomaly of the orbit [rad]
+        bstar : float or Quantity
+            sgp4 type drag coefficient [1 / earth radius] (see TLE class documentation)
+        launch_year : int
+            launch year (e.g., '2014')
+        launch_nr : int
+            launch number within the year (e.g., '17')
+        launch_piece : str
+            launch piece (3 chars max)
+        sat_num : int
+            satellite catalog number (e.g., '39552'; see TLE class documentation)
+        classification : str
+            Classification (`U` for Unclassified, `C` for Classified, `S` for Secret)
+        rev_nr : int
+            Revolution number of the object at Epoch Time (should be in range 0 <= `rev_nr` < 10000) [revolutions]
+        el_nr : int
+            Element set number (should be in range 0 <= `el_nr` < 10000). Incremented when a new TLE is generated for this object.
+
+
+        Returns
+        -------
+        TLE
+            `TLE` object initialised with the required SSO parameters.
+        """
+
+        # MU in m3/s2
+        mu = Constants.WGS84_EARTH_MU * u["m**3/s**2"]
+
+        # R_E in m
+        earth_radius = Constants.WGS84_EARTH_EQUATORIAL_RADIUS * u.m
+
+        # Set J2 and J4 (EGM96)
+        j2 = 0.0010826266835531513
+        # j4 = -1.619621591367e-06
+        # j6 = 5.406812391070849e-07
+
+        # check Quantity objects and add units in m
+        sma = (
+            altitude + earth_radius
+            if isinstance(altitude, u.Quantity)
+            else altitude * u.m + earth_radius
+        )
+
+        # mean motion (guaranteed to be in 1/s)
+        mean_motion = np.sqrt(mu / sma**3).m
+
+        # mean motion assumed constant
+        n_dot = 0.0  # rad/s2
+        n_dotdot = 0.0  # rad/s3
+
+        eph_type = 0
+
+        # target omega_dot value for sun sync
+        om_dot_sun_sync = 360.0 / 365.2421897 * u.deg / u.day
+
+        # Start inclination procedure
+        # ---------------------------
+        # Inclination initial guess from J2 only
+        inclination = np.arccos(
+            (
+                (-2 * sma**3.5 * om_dot_sun_sync * (1 - eccentricity**2) ** 2)
+                / (3 * earth_radius**2 * j2 * np.sqrt(mu))
+            ).to_base_units()
+        )
+
+        # Set up iteration to compute the J2^2 and J4 correction
+        om_dot_next = 0.0 * u.deg / u.day
+        i = inclination
+        e = eccentricity
+        om_dot = om_dot_sun_sync
+        while (om_dot_sun_sync - om_dot_next) > 1e-8 * u.deg / u.day:
+
+            om_dot_next = OrbitUtils.compute_raan_drift_rate(sma, e, i)
+
+            d_om = om_dot_next - om_dot
+            di = -d_om / (om_dot * np.tan(i))
+            i = i + di
+            om_dot = om_dot_next
+
+        # Inclination in rad
+        inclination = i.m_as("rad")
+
+        # Start RAAN procedure
+        # ---------------------------
+        # sidereal time hour angles in radians
+        sidereal_time = (
+            FramesFactory.getTOD(True)
+            .getTransformTo(FramesFactory.getGTOD(True), epoch)
+            .getRotation()
+            .getAngle()
+        ) * u.rad
+
+        frac_day = (
+            epoch.getComponents(TimeScalesFactory.getUTC())
+            .getTime()
+            .getSecondsInUTCDay()
+            * u.sec
+        ).m_as("day")
+
+        # compute the RAAN value and normalise (in rad)
+        raan = sidereal_time + ((ltan / 24.0) - frac_day) * 360.0 * u.deg
+        raan = np.mod(raan.to("rad").m, 2 * np.pi)
+
+        # check Quantity objects and add units in rad
+        arg_perigee = (
+            arg_perigee.m("rad") if isinstance(arg_perigee, u.Quantity) else arg_perigee
+        )
+        mean_anomaly = (
+            mean_anomaly.m("rad")
+            if isinstance(mean_anomaly, u.Quantity)
+            else mean_anomaly
+        )
+
+        # all Quantity values converted to values by now
+        # numpy uses float64 but Orekit requires float
+        tle = TLE(
+            sat_num,
+            classification,
+            launch_year,
+            launch_nr,
+            launch_piece,
+            eph_type,
+            el_nr,
+            epoch,  # user defined
+            float(mean_motion),  # in 1/s
+            n_dot,  # defined 0.
+            n_dotdot,  # defined 0.
+            float(eccentricity),  # user defined float
+            float(inclination),  # in rad
+            arg_perigee,  # in rad
+            float(raan),  # in rad
+            mean_anomaly,  # in rad
+            rev_nr,
+            bstar,  # user defined
+        )
+
+        return tle
+
+
+class TLEUtils:
+    """
+    Utilities for TLE based orbits.
+
+    Basic conversions and functions of orbit related operations for convenience.
+    """
+
+    @staticmethod
+    def compute_sma(tle: TLE) -> Quantity:
+        """
+        Computes the (mean) semimajor axis from the TLE.
+
+        The orbit plane rotation rate is calculated via a J4 secular drift rate (See
+        Fundamentals of Astrodynamics Vallado 4th ed pg. 650).
+
+        Equations use WGS84 parameters for mu.
+
+        Parameters
+        ----------
+        tle
+            TLE
+
+        Returns
+        -------
+        sma
+            Semimajor axis with units [m]
+        """
+
+        return (
+            np.power(Constants.WGS84_EARTH_MU / tle.getMeanMotion() ** 2, 1.0 / 3.0)
+            * u.m
+        )
+
+    @staticmethod
+    def compute_raan_drift_rate(
+        tle: TLE,
+        include_j4: bool = True,
+    ):
+        """
+        Computes the RAAN (or orbital plane) drift rate from the TLE.
+
+        The orbit plane rotation rate is calculated via a J4 secular drift rate (See
+        Fundamentals of Astrodynamics Vallado 4th ed pg. 650).
+
+        Equations use WGS84 parameters for Earth equator radius and mu.
+        J2 and J4 are from EGM96.
+
+        Parameters
+        ----------
+        tle
+            TLE
+        include_j4
+            True if J2^2 and J4 effects are to be included, False for J2 only.
+
+        Returns
+        -------
+        raan_drift_rate
+            RAAN drift rate in angles/time (e.g. deg/day)
+        """
+
+        sma = TLEUtils.compute_sma(tle)
+        return OrbitUtils.compute_raan_drift_rate(
+            sma, tle.getE(), tle.getI(), include_j4
+        )
