@@ -48,7 +48,6 @@ workflows:
     jobs:
       - codestyle
       - tests
-      - upload-to-codecov
   upload-to-codecov:
     jobs:
       - checkout
