@@ -43,13 +43,17 @@ jobs:
           name: Make sure style checks pass
           command: tox -e codestyle
 
+  upload-to-codecov:
+
+    steps:
+      - checkout
+      - codecov/upload
+
 workflows:
   tests_and_codestyle:
     jobs:
       - codestyle
       - tests
+      - upload-to-codecov
 
-  upload-to-codecov:
-    jobs:
-      - checkout
-      - codecov/upload
+
