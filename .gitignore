@@ -135,6 +135,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Other temporary stuff
+# Other temporary stuff and large data dirs
 satkit/temp
 /data/orekit-data/orekit-data-master.zip
+/data/orekit-data/orekit-data-master/
