@@ -26,6 +26,10 @@ jobs:
       - run:
           name: Run tests
           command: tox -e py310
+      - run:
+          name: Run coverage
+          command: tox -e coverage
+      - codecov/upload
 
   codestyle:
 
@@ -48,8 +52,4 @@ workflows:
     jobs:
       - codestyle
       - tests
-  upload-to-codecov:
-    jobs:
-      - checkout
-      - codecov/upload
 
