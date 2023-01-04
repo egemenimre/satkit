@@ -33,8 +33,11 @@ jobs:
       - run:
           name: Prepare upload
           command: conda install -y curl
+      - run:
+          name: Prepare validation
+          command: sudo apt-get install gpgv
       - codecov/upload:
-          validate: false
+#          validate: false
 
 
   codestyle:
