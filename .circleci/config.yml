@@ -30,6 +30,8 @@ jobs:
           name: Run coverage
           command: tox -e coverage
       - codecov/upload
+          - validate: 'false'
+
 
   codestyle:
 
