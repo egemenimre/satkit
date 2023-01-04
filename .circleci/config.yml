@@ -29,6 +29,9 @@ jobs:
       - run:
           name: Run coverage
           command: tox -e coverage
+      - run:
+          name: Install curl
+          command: conda install -y curl
       - codecov/upload
 
   codestyle:
