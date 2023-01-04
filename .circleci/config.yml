@@ -26,6 +26,10 @@ jobs:
       - run:
           name: Run tests
           command: tox -e py310
+      - run:
+          name: Run coverage
+          command: tox -e coverage
+      - codecov/upload
 
   codestyle:
 
@@ -43,36 +47,10 @@ jobs:
           name: Make sure style checks pass
           command: tox -e codestyle
 
-  codecov:
-
-    docker:
-      - image: cimg/python:3.10
-
-    steps:
-      # Get repo from GitHub
-      - checkout
-      - run:
-          name: Install coverage and pytest
-          command: pip install coverage pytest
-      - run:
-          name: Run coverage
-          command: |
-            coverage run --source satkit -m pytest
-            coverage xml
-            coverage report -m
-#      - run:
-#          name: Install curl
-#          command: conda install -y curl
-#      - run:
-#          name: Install gpg
-#          command: pip install gpg
-      - codecov/upload
-
 
 workflows:
   tests_and_codestyle:
     jobs:
       - codestyle
       - tests
-      - codecov
 
