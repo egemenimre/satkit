@@ -54,9 +54,9 @@ jobs:
       - run:
           name: Install tox
           command: pip install tox
-#      - run:
-#          name: Run coverage
-#          command: tox -e coverage
+      - run:
+          name: Run coverage
+          command: tox -e coverage
 #      - run:
 #          name: Install curl
 #          command: conda install -y curl
