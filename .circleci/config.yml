@@ -17,9 +17,6 @@ jobs:
       # Get repo from GitHub
       - checkout
       - run:
-          name: Prepare validation x
-          command: apt-get install gpgv
-      - run:
           name: Install tox
           command: pip install tox
 #      # Create venv and install dependencies - not needed as the docker image is miniconda
@@ -38,7 +35,7 @@ jobs:
           command: conda install -y curl
       - run:
           name: Prepare validation
-          command: apt-get install gpgv
+          command: apt-get install gpgv gpg
       - codecov/upload
 #          validate: false
 
