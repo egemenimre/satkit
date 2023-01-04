@@ -26,12 +26,16 @@ jobs:
       - run:
           name: Run tests
           command: tox -e py310
+#      The rest is for codecov upload
       - run:
           name: Run coverage
           command: tox -e coverage
       - run:
           name: Install curl
           command: conda install -y curl
+      - run:
+          name: Install gpg
+          command: pip install gpg
       - codecov/upload
 
   codestyle:
