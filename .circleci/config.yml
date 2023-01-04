@@ -56,7 +56,10 @@ jobs:
           command: pip install tox
       - run:
           name: Run coverage
-          command: tox -e coverage
+          command: |
+            coverage run --source satkit -m pytest
+            coverage xml
+            coverage report -m
 #      - run:
 #          name: Install curl
 #          command: conda install -y curl
