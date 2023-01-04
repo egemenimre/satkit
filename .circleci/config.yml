@@ -26,41 +26,6 @@ jobs:
       - run:
           name: Run tests
           command: tox -e py310
-#      The rest is for codecov upload
-      - run:
-          name: Run coverage
-          command: tox -e coverage
-      - run:
-          name: Install curl
-          command: conda install -y curl
-      - run:
-          name: Install gpg
-          command: pip install gpg
-      - codecov/upload
-
-  codecov:
-
-    docker:
-      - image: cimg/python:3.10
-
-    steps:
-      # Get repo from GitHub
-      - checkout
-      - run:
-          name: Install tox
-          command: pip install tox
-      - run:
-          name: Run coverage
-          command: tox -e coverage
-#      - run:
-#          name: Install curl
-#          command: conda install -y curl
-#      - run:
-#          name: Install gpg
-#          command: pip install gpg
-      - codecov/upload
-
-
 
   codestyle:
 
@@ -77,6 +42,29 @@ jobs:
       - run:
           name: Make sure style checks pass
           command: tox -e codestyle
+
+  codecov:
+
+    docker:
+      - image: cimg/python:3.10
+
+    steps:
+      # Get repo from GitHub
+      - checkout
+      - run:
+          name: Install tox
+          command: pip install tox
+#      - run:
+#          name: Run coverage
+#          command: tox -e coverage
+#      - run:
+#          name: Install curl
+#          command: conda install -y curl
+#      - run:
+#          name: Install gpg
+#          command: pip install gpg
+      - codecov/upload
+
 
 workflows:
   tests_and_codestyle:
