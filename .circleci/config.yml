@@ -29,8 +29,8 @@ jobs:
       - run:
           name: Run coverage
           command: tox -e coverage
-      - codecov/upload
-          - validate false
+      - codecov/upload:
+          validate: false
 
 
   codestyle:
