@@ -29,14 +29,26 @@ extra_path = Path(
 )
 
 
-def process_paths(path):
+def process_paths(alt_intermediate_dir, path):
     """
     Processes the path depending on the run environment.
+    Checks the Nominal Path, if it does not exist, tries the alternate path.
+
+    Nominal path: `current working dir` + `path`
+
+    Alternate path: `current working dir` + `alternate intermediate dir` + `path`
+
+    Parameters
+    ----------
+    alt_intermediate_dir : Path
+        Alternate intermediate directory
+    path: Path
+        Filepath
     """
     working_dir = Path.cwd()
 
     file_path = working_dir.joinpath(path)
     if not working_dir.joinpath(file_path).exists():
-        file_path = working_dir.joinpath(extra_path).joinpath(path)
+        file_path = working_dir.joinpath(alt_intermediate_dir).joinpath(path)
 
-    return file_path
+    return file_path.resolve()
