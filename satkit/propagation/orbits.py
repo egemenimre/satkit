@@ -71,9 +71,9 @@ class OrbitUtils:
     @staticmethod
     @u.wraps("rad/s", ("m", None, "rad", None), False)
     def compute_raan_drift_rate(
-        sma: float | Quantity,
-        eccentricity: float,
-        inclination: float | Quantity,
+        a: float | Quantity,
+        e: float,
+        i: float | Quantity,
         include_j4: bool = True,
     ) -> Quantity:
         """
@@ -87,11 +87,11 @@ class OrbitUtils:
 
         Parameters
         ----------
-        sma
+        a
             (mean) semimajor axis [m]
-        eccentricity
+        e
             (mean) eccentricity of the orbit [dimensionless]
-        inclination
+        i
             (mean) inclination [rad]
         include_j4
             True if J2^2 and J4 effects are to be included, False for J2 only.
@@ -102,17 +102,16 @@ class OrbitUtils:
             RAAN drift rate in angles/time (e.g. deg/day)
         """
 
-        # R_E in m
-        r_e = Constants.WGS84_EARTH_EQUATORIAL_RADIUS * u.m
-        # MU in m3/s2
-        mu = Constants.WGS84_EARTH_MU * u["m**3/s**2"]
+        # Quantity input guaranteed to be in proper units, converted to float.
+        # Float input processed as-is, assumed to be in correct units.
 
-        e = eccentricity
+        # R_E in m
+        r_e = Constants.WGS84_EARTH_EQUATORIAL_RADIUS
+        # MU in m3/s2
+        mu = Constants.WGS84_EARTH_MU
 
         # Inclination in radians
-        i = inclination if isinstance(inclination, u.Quantity) else inclination * u.rad
-        #  semimajor axis in metres
-        a = sma if isinstance(sma, u.Quantity) else sma * u.m
+        # Semimajor axis in metres
         p = a * (1.0 - e**2)
         n = np.sqrt(mu / a**3)
 
