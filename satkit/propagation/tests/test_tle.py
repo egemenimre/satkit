@@ -34,7 +34,7 @@ def setup_module():
     """setup any state specific to the execution of the module."""
 
     #  Init Orekit data
-    data_file = process_paths(orekit_data_file_path).resolve()
+    data_file = process_paths(extra_path, orekit_data_file_path).resolve()
 
     setup_orekit_curdir(str(data_file))
 
