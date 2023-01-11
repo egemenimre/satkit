@@ -21,6 +21,55 @@ class OrbitUtils:
     """
 
     @staticmethod
+    @u.wraps("m", "rad/s", False)
+    def compute_sma(mean_mot: float | Quantity) -> Quantity:
+        """
+        Computes the (mean) semimajor axis from the mean motion.
+
+        Equations use WGS84 parameters for mu.
+
+        Parameters
+        ----------
+        mean_mot :  float or Quantity
+            Mean Motion [rad/s]
+
+        Returns
+        -------
+        sma
+            Semimajor axis with units [m]
+        """
+
+        # Quantity input guaranteed to be in [rad/s], converted to float.
+        # Float input processed as-is, assumed to be in correct units.
+
+        return np.power(Constants.WGS84_EARTH_MU / mean_mot**2, 1.0 / 3.0) * u.m
+
+    @staticmethod
+    @u.wraps("rad/s", "m", False)
+    def compute_mean_mot(a: float | Quantity) -> Quantity:
+        """
+        Computes the (mean) mean motion axis from the semimajor axis.
+
+        Equations use WGS84 parameters for mu.
+
+        Parameters
+        ----------
+        a :  float or Quantity
+            Semimajor axis [m]
+
+        Returns
+        -------
+        sma
+            Mean motion with units [rad/s]
+        """
+
+        # Quantity input guaranteed to be in [m], converted to float.
+        # Float input processed as-is, assumed to be in correct units.
+
+        return np.sqrt(Constants.WGS84_EARTH_MU / a**3) * u.rad / u.s
+
+    @staticmethod
+    @u.wraps("rad/s", ("m", None, "rad", None), False)
     def compute_raan_drift_rate(
         sma: float | Quantity,
         eccentricity: float,
