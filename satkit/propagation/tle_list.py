@@ -13,6 +13,7 @@ from typing import List
 
 from orekit.pyhelpers import absolutedate_to_datetime
 from org.orekit.propagation.analytical.tle import TLE
+from org.orekit.time import AbsoluteDate
 
 from satkit.propagation.tle import TleDefaultUnits
 
@@ -103,7 +104,7 @@ class _TleList(ABC):
         # create new object with the filtered list
         return self._selfcopy(filtered_list)
 
-    def filter_by_func(self, param, filter_func):
+    def filter_by_func(self, filter_func):
         """
         Filters the TLE list for compliance to a given filter function.
 
@@ -147,11 +148,7 @@ class _TleList(ABC):
         TleStorage
             A `TleStorage` object that contains the filtered list of TLE data
         """
-        filtered_list = [
-            tle
-            for tle in self.tle_list
-            if filter_func(getattr(tle, str(param.value), tle))
-        ]
+        filtered_list = [tle for tle in self.tle_list if filter_func(tle)]
 
         # create new object with the filtered list
         return self._selfcopy(filtered_list)
@@ -224,34 +221,72 @@ class _TleList(ABC):
             TleFilterParams.TLE is given as an input
         """
 
-        # `min_value` and `max_value` may be quantities and should be checked explicitly
-        # strip units and convert before filtering
-        if TleDefaultUnits[param.name].value:
-            unit = TleDefaultUnits[param.name].value
-            if max_value:
-                max_value = max_value.m_as(unit)
-            if min_value:
-                min_value = min_value.m_as(unit)
+        # date/time filtering is a special case
+        if param.value == "date":
+            # convert min and max values to datetime if needed
+            min_value = (
+                absolutedate_to_datetime(min_value)
+                if isinstance(min_value, AbsoluteDate)
+                else min_value
+            )
+            max_value = (
+                absolutedate_to_datetime(max_value)
+                if isinstance(max_value, AbsoluteDate)
+                else max_value
+            )
+
+            # comparison function is time (filter_param not used, for compatibility only)
+            def comp_func(tle: TLE, filter_param: TleRangeFilterParams):
+                return absolutedate_to_datetime(tle.getDate())
+
+        # all other filtering cases
+        else:
+            # `min_value` and `max_value` may be quantities and should be checked explicitly
+            # strip units and convert before filtering
+            if TleDefaultUnits[param.name].value:
+                unit = TleDefaultUnits[param.name].value
+                if max_value:
+                    max_value = max_value.m_as(unit)
+                if min_value:
+                    min_value = min_value.m_as(unit)
+
+            # comparison function is the selected parameter value
+            def comp_func(tle: TLE, filter_param: TleRangeFilterParams):
+                return getattr(tle, str(filter_param.value), None)
+
+        # now generate the lists with the comparator functions
 
         # for `None`, otherwise can be interpreted as `True` or `False`.
         if min_value is not None and max_value is not None:
-            filtered_list = [
-                tle
-                for tle in self.tle_list
-                if max_value > getattr(tle, str(param.value), None) > min_value
-            ]
+
+            def check_func(tle: TLE, filter_param: TleRangeFilterParams):
+                return (
+                    max_value >= comp_func(tle, param) >= min_value
+                    if includes_bounds
+                    else max_value > comp_func(tle, param) > min_value
+                )
+
+            filtered_list = [tle for tle in self.tle_list if check_func(tle, param)]
         elif min_value is not None:
-            filtered_list = [
-                tle
-                for tle in self.tle_list
-                if getattr(tle, str(param.value), None) > min_value
-            ]
+
+            def check_func(tle: TLE, filter_param: TleRangeFilterParams):
+                return (
+                    comp_func(tle, param) >= min_value
+                    if includes_bounds
+                    else comp_func(tle, param) > min_value
+                )
+
+            filtered_list = [tle for tle in self.tle_list if check_func(tle, param)]
         elif max_value is not None:
-            filtered_list = [
-                tle
-                for tle in self.tle_list
-                if max_value > getattr(tle, str(param.value), None)
-            ]
+
+            def check_func(tle: TLE, filter_param: TleRangeFilterParams):
+                return (
+                    max_value >= comp_func(tle, param)
+                    if includes_bounds
+                    else max_value > comp_func(tle, param)
+                )
+
+            filtered_list = [tle for tle in self.tle_list if check_func(tle, param)]
         else:
             filtered_list = []
 
@@ -284,7 +319,7 @@ class TleTimeSeries(_TleList):
         # init a TLE Storage and filter for the sat number
         self.tle_list = (
             TleStorage(tle_list)
-            .filter_by_value(TleFilterParams.SAT_NR, sat_number)
+            .filter_by_value(TleValueFilterParams.SAT_NR, sat_number)
             .tle_list
         )
 
