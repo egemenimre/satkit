@@ -17,17 +17,14 @@ from org.orekit.propagation.analytical.tle import TLE
 from satkit.propagation.tle import TleDefaultUnits
 
 
-class TleFilterParams(Enum):
+class TleRangeFilterParams(Enum):
     """TLE Filtering Parameters."""
 
     EPOCH = "date"
     DATE = "date"
     SAT_NR = "satelliteNumber"
     LAUNCH_NR = "launchNumber"
-    LAUNCH_PIECE = "launchPiece"
     LAUNCH_YR = "launchYear"
-    CLASSIFICATION = "classification"
-    EPHEMERIS_TYPE = "ephemerisType"
     INCL = "i"
     INCLINATION = "i"
     E = "e"
@@ -44,12 +41,25 @@ class TleFilterParams(Enum):
     REV_NR = "revolutionNumberAtEpoch"
 
 
+class TleValueFilterParams(Enum):
+    """TLE Filtering Parameters."""
+
+    SAT_NR = "satelliteNumber"
+    LAUNCH_NR = "launchNumber"
+    LAUNCH_PIECE = "launchPiece"
+    LAUNCH_YR = "launchYear"
+    CLASSIFICATION = "classification"
+    EPHEMERIS_TYPE = "ephemerisType"
+    ELEMENT_NR = "elementNumber"
+    REV_NR = "revolutionNumberAtEpoch"
+
+
 class _TleList(ABC):
     """Abstract Base Class for TLE lists."""
 
     tle_list: List[TLE] = []
 
-    def filter_by_value(self, param: TleFilterParams, value):
+    def filter_by_value(self, param: TleValueFilterParams, value):
         """
         Filters the TLE list for equivalence to a given value.
 
@@ -141,7 +151,13 @@ class _TleList(ABC):
         # create new object with the filtered list
         return self._selfcopy(filtered_list)
 
-    def filter_by_range(self, param, min_value=None, max_value=None):
+    def filter_by_range(
+        self,
+        param: TleRangeFilterParams,
+        min_value=None,
+        max_value=None,
+        includes_bounds=False,
+    ):
         """
         Filters the TLE list for compliance to a given min/max values.
 
@@ -173,8 +189,8 @@ class _TleList(ABC):
 
         Parameters
         ----------
-        param : TleFilterParams
-            Filter parameter (such as name or satellite number)
+        param : TleRangeFilterParams
+            Filter parameter (such as inclination or satellite number)
         min_value
             Minimum value to test the parameter against
         max_value
