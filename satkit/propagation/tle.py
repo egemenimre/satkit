@@ -68,15 +68,15 @@ class TleFactory:
     @staticmethod
     @u.wraps(None, (None, "rad", None, None, None, None, None, None, None), False)
     def init_geo(
-            epoch: AbsoluteDate,
-            longitude: float | Quantity,
-            launch_year: int = 2000,
-            launch_nr: int = 1,
-            launch_piece: str = "A",
-            sat_num: int = 99999,
-            classification: str = "U",
-            rev_nr: int = 0,
-            el_nr: int = 1,
+        epoch: AbsoluteDate,
+        longitude: float | Quantity,
+        launch_year: int = 2000,
+        launch_nr: int = 1,
+        launch_piece: str = "A",
+        sat_num: int = 99999,
+        classification: str = "U",
+        rev_nr: int = 0,
+        el_nr: int = 1,
     ) -> TLE:
         """
         Initialises a geostationary satellite TLE.
@@ -165,38 +165,38 @@ class TleFactory:
     @u.wraps(
         None,
         (
-                None,
-                "m",
-                None,
-                None,
-                "rad",
-                "rad",
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
+            None,
+            "m",
+            None,
+            None,
+            "rad",
+            "rad",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
         ),
         False,
     )
     def init_sso(
-            epoch: AbsoluteDate,
-            altitude: float | Quantity,
-            ltan: float,
-            eccentricity: float = 0.0,
-            arg_perigee: float | Quantity = 0.0 * u.rad,
-            mean_anomaly: float | Quantity = 0.0 * u.rad,
-            bstar: float = 0.0,
-            launch_year: int = 2000,
-            launch_nr: int = 1,
-            launch_piece: str = "A",
-            sat_num: int = 99999,
-            classification: str = "U",
-            rev_nr: int = 0,
-            el_nr: int = 1,
+        epoch: AbsoluteDate,
+        altitude: float | Quantity,
+        ltan: float,
+        eccentricity: float = 0.0,
+        arg_perigee: float | Quantity = 0.0 * u.rad,
+        mean_anomaly: float | Quantity = 0.0 * u.rad,
+        bstar: float = 0.0,
+        launch_year: int = 2000,
+        launch_nr: int = 1,
+        launch_piece: str = "A",
+        sat_num: int = 99999,
+        classification: str = "U",
+        rev_nr: int = 0,
+        el_nr: int = 1,
     ) -> TLE:
         """
         Initialises a sun-synchronous Earth orbit TLE.
@@ -274,7 +274,7 @@ class TleFactory:
         sma = altitude + earth_radius
 
         # mean motion [rad/s]
-        mean_motion = np.sqrt(mu / sma ** 3)
+        mean_motion = np.sqrt(mu / sma**3)
 
         # mean motion assumed constant
         n_dot = 0.0  # rad/s2
@@ -290,8 +290,8 @@ class TleFactory:
         # ---------------------------
         # Inclination initial guess from J2 only
         inclination = np.arccos(
-            (-2 * sma ** 3.5 * om_dot_sun_sync * (1 - eccentricity ** 2) ** 2)
-            / (3 * earth_radius ** 2 * j2 * np.sqrt(mu))
+            (-2 * sma**3.5 * om_dot_sun_sync * (1 - eccentricity**2) ** 2)
+            / (3 * earth_radius**2 * j2 * np.sqrt(mu))
         )
 
         # Set up iteration to compute the J2^2 and J4 correction
@@ -323,26 +323,15 @@ class TleFactory:
         )
 
         frac_day = (
-                epoch.getComponents(TimeScalesFactory.getUTC())
-                .getTime()
-                .getSecondsInUTCDay()
-                * u.sec
+            epoch.getComponents(TimeScalesFactory.getUTC())
+            .getTime()
+            .getSecondsInUTCDay()
+            * u.sec
         ).m_as("day")
 
         # compute the RAAN value and normalise (in rad)
         raan = sidereal_time + ((ltan / 24.0) - frac_day) * 2 * np.pi
         raan = np.mod(raan, 2 * np.pi)
-
-        # check Quantity objects and add units in rad
-        # arg_perigee = (
-        #     arg_perigee.m("rad") if isinstance(arg_perigee, u.Quantity) else arg_perigee
-        # )
-
-        # mean_anomaly = (
-        #     mean_anomaly.m("rad")
-        #     if isinstance(mean_anomaly, u.Quantity)
-        #     else mean_anomaly
-        # )
 
         # all Quantity values converted to values by now
         # numpy uses float64 but Orekit requires float
@@ -402,8 +391,8 @@ class TLEUtils:
 
     @staticmethod
     def compute_raan_drift_rate(
-            tle: TLE,
-            include_j4: bool = True,
+        tle: TLE,
+        include_j4: bool = True,
     ) -> Quantity:
         """
         Computes the RAAN (or orbital plane) drift rate from the TLE.
