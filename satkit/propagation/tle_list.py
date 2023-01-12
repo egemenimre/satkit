@@ -107,20 +107,27 @@ class _TleList(ABC):
         """
         Filters the TLE list for compliance to a given filter function.
 
-        For example `param` can be equal to `TleFilterParams.SM_AXIS` and
-        `filter_func` can be a filtering function that tests this parameter and
-        returns `True` or `False` accordingly. The following function filters for
-        semi-major axis values above 7000 km. Note that units should be defined and
-        compatible with the value to be compared against. For semimajor axis, distance
-        units such as meters are acceptable but using no dimensions or using
-        wrong units (such as degrees) will throw an error.
+        The `filter_func` should be a filtering function that tests the TLE
+        and returns `True` or `False` accordingly. This method is useful for
+        more complicated filters for the entire TLE (for example filters with
+        `and` or `or` can be constructed, filtering for two parameters
+        simultaneously).
+
+        The following function filters for semi-major axis values above 7000 km.
+        Note that units should be defined and compatible with the value to be
+        compared against. For semimajor axis, distance units such as meters
+        are acceptable but using no dimensions or using wrong units
+        (such as degrees) will throw an error.
 
         >>> from satkit import u
-        >>> def sma_filter(a):
-        >>>     return True if a > 7000 * u.km else False
+        >>> from satkit.propagation.tle import TLEUtils
+        >>>
+        >>> def sma_filter(tle):
+        >>>     return True if TLEUtils.compute_sma(tle) > 7000 * u.km else False
 
         For exact equivalences (such as satellite names or ID numbers),
         using `filter_by_value` method will be easier and more appropriate.
+        For simple range checks, `filter_by_range` should be used.
 
         This method returns a `TleStorage` object even if the filtering result is empty.
         In this case, `tle_list` parameter of the `TleStorage` object will be an empty
@@ -132,8 +139,6 @@ class _TleList(ABC):
 
         Parameters
         ----------
-        param : TleFilterParams
-            Filter parameter (such as name or satellite number)
         filter_func
             Function to test the parameter against
 
@@ -165,16 +170,26 @@ class _TleList(ABC):
 
         `max_value > param > min_value`
 
-        For example `param` can be equal to `TleFilterParams.SM_AXIS`, then
-        this parameter is tested against the minimum and maximum semimajor axis values
+        or, if `includes_bounds` set to `True`:
+
+        `max_value >= param >= min_value`
+
+        For example `param` can be equal to `TleFilterParams.INCLINATION`, then
+        this parameter is tested against the minimum and maximum inclination values
         supplied. If `None` is supplied for `min_value` or `max_value`, then there
         is no range or range check defined for this parameter. For example,
         if `min_value` is `None`, the parameter check reduces to `max_value > param`.
 
-        Note that units should be defined and
-        compatible with the value to be compared against. For semimajor axis, distance
-        units such as meters are acceptable but using no dimensions or using
-        wrong units (such as degrees) will throw an error.
+        Note that units should be defined and compatible with the value to be
+        compared against. For inclination, angle units such as degrees are
+        acceptable but using no dimensions or using wrong units (such as degrees)
+        will throw an error.
+
+        For time comparisons, min and max values can be `datetime` or `AbsoluteDate`
+        objects.
+
+        Semimajor axis comparisons should be carried out via Mean Motion parameter
+        or using the `filter_by_func()` method.
 
         For exact equivalences (such as satellite names or ID numbers),
         using `filter_by_value` method will be easier and more appropriate.
@@ -195,6 +210,8 @@ class _TleList(ABC):
             Minimum value to test the parameter against
         max_value
             Maximum value to test the parameter against
+        includes_bounds
+            `True` if bounds are to be included, `False` otherwise
 
         Returns
         -------
