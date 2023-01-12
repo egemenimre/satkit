@@ -195,9 +195,9 @@ def test_tle_timeseries_time_filter():
 
     assert isinstance(tle_storage_filtered, TleTimeSeries)
     assert (
-            str(tle_storage_filtered.tle_list[0].getDate()) == "2021-04-01T02:14:48.404256Z"
+        str(tle_storage_filtered.tle_list[0].getDate()) == "2021-04-01T02:14:48.404256Z"
     )
     assert (
-            str(tle_storage_filtered.tle_list[-1].getDate())
-            == "2021-04-01T20:16:48.785376Z"
+        str(tle_storage_filtered.tle_list[-1].getDate())
+        == "2021-04-01T20:16:48.785376Z"
     )
