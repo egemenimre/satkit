@@ -154,11 +154,11 @@ class _TleList(ABC):
         return self._selfcopy(filtered_list)
 
     def filter_by_range(
-            self,
-            param: TleRangeFilterParams,
-            min_value=None,
-            max_value=None,
-            includes_bounds=False,
+        self,
+        param: TleRangeFilterParams,
+        min_value=None,
+        max_value=None,
+        includes_bounds=False,
     ):
         """
         Filters the TLE list for compliance to a given min/max values.
@@ -187,6 +187,9 @@ class _TleList(ABC):
 
         Semimajor axis comparisons should be carried out via Mean Motion parameter
         or using the `filter_by_func()` method.
+
+        "Launch piece" cannot be compared by range, as 18SpCS designations wrap from
+        "Z" to "AB".
 
         For exact equivalences (such as satellite names or ID numbers),
         using `filter_by_value` method will be easier and more appropriate.
@@ -442,8 +445,8 @@ def _parse_tle_list(tle_source_str_list):
             if __is_tle_line(tle_source_str_list[i + 1], 2):
                 line2 = tle_source_str_list[i + 1]
                 if i > 0 and (
-                        not __is_tle_line(tle_source_str_list[i - 1], 1)
-                        and not __is_tle_line(tle_source_str_list[i - 1], 2)
+                    not __is_tle_line(tle_source_str_list[i - 1], 1)
+                    and not __is_tle_line(tle_source_str_list[i - 1], 2)
                 ):
                     name = tle_source_str_list[i - 1].strip("\n ")
                     if name.startswith("0 "):
