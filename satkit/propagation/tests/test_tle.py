@@ -141,9 +141,9 @@ def test_init_sso(tle_sso):
         el_nr=tle_sso.getElementNumber(),
     )
 
-    print("")
-    print(tle_sso)
-    print(tle)
+    # print("")
+    # print(tle_sso)
+    # print(tle)
 
     # print(tle_sso.node_rotation_rate())
     # print(tle.node_rotation_rate())
