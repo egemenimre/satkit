@@ -15,7 +15,7 @@ The documentation for satkit is here: <https://satkit.readthedocs.io/>
 As a quick-start, you can find some hands-on Jupyter examples in the [tutorials directory](https://github.com/egemenimre/satkit/tree/master/docs/tutorials) (or in the [documentation](https://satkit.readthedocs.io/en/latest/tutorials.html) for a text version).
 
 
-[//]: # (## Installing satkit)
+## Installing satkit
 
 [//]: # ()
 [//]: # (The satkit package is on [PyPI]&#40;https://pypi.org/project/satkit/&#41; and you can install it simply by running:)
@@ -32,8 +32,8 @@ As a quick-start, you can find some hands-on Jupyter examples in the [tutorials 
 [//]: # ()
 [//]: # (Do not install `satkit` using `sudo`.)
 
-[//]: # ()
-[//]: # (You can find the source code on GitHub: <https://github.com/egemenimre/satkit>)
+
+You can find the source code on GitHub: <https://github.com/egemenimre/satkit>
 
 
 ## Requirements
@@ -41,6 +41,7 @@ As a quick-start, you can find some hands-on Jupyter examples in the [tutorials 
 -   NumPy and SciPy are used for the underlying mathematical algorithms
 -   [Orekit](https://www.orekit.org) handles the orbital mechanics computations.
 -   [Orekit Python Wrapper](https://gitlab.orekit.org/orekit-labs/python-wrapper) provides a Python wrapper for Orekit.
+-   [Pint](https://github.com/hgrecco/pint) provides units and quantity support.
 -   Pytest provides the testing framework
 
 
