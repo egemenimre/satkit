@@ -139,3 +139,4 @@ dmypy.json
 satkit/temp
 /data/orekit-data/orekit-data-master.zip
 /data/orekit-data/orekit-data-master/
+/test-results/
