@@ -11,7 +11,7 @@ jobs:
     docker:
       - image: continuumio/miniconda3
 
-#    parallelism: 4
+    parallelism: 4
 
     steps:
       # Get repo from GitHub
@@ -25,7 +25,15 @@ jobs:
 #          command: conda env create -f environment.yml
       - run:
           name: Run tests
-          command: tox -e py310
+          command: | 
+            set -e
+            TEST_FILES=$(circleci tests glob "satkit/**/test_*.py" | circleci tests split --split-by=timings)
+#            mkdir -p test-results
+            tox -e py310 -- $TEST_FILES
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
 #      Coverage stuff below
       - run:
           name: Run coverage
