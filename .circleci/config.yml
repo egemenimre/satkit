@@ -11,7 +11,7 @@ jobs:
     docker:
       - image: continuumio/miniconda3
 
-    parallelism: 4
+    parallelism: 2
 
     steps:
       # Get repo from GitHub
