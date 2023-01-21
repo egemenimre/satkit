@@ -6,6 +6,7 @@
 """
 TLE list helper functions.
 """
+import functools
 from abc import ABC
 from copy import copy
 from enum import Enum
@@ -328,7 +329,12 @@ class TleTimeSeries(_TleList):
 
         # order the internal TLE list with respect to epoch
         # TLE date object does not have comparators, use Python datetime object
-        self.tle_list.sort(key=lambda tle: absolutedate_to_datetime(tle.getDate()))
+
+        self.tle_list.sort(
+            key=functools.cmp_to_key(
+                lambda tle1, tle2: tle1.getDate().compareTo(tle2.getDate())
+            )
+        )
 
 
 class TleStorage(_TleList):
