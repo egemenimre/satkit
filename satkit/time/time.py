@@ -53,3 +53,8 @@ class AbsoluteDateExt(AbsoluteDate):
 
     def __gt__(self, other):
         return self.isAfter(other)
+
+    def __sub__(self, other: type[AbsoluteDate]) -> Quantity:
+        """This is equivalent to `self.durationFrom(otherDate)`.
+        Output in seconds as a `Quantity` object."""
+        return self.durationFrom(other) * u.s
