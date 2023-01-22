@@ -8,10 +8,10 @@ Time functions tests.
 
 """
 
+from org.orekit.time import TimeScalesFactory
+
 from satkit import u
 from satkit.time.time import AbsoluteDateExt
-
-from org.orekit.time import TimeScalesFactory
 
 
 def test_time_sort():
