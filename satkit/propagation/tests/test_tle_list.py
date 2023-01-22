@@ -9,8 +9,7 @@ TLE list tests.
 """
 from pathlib import Path
 
-from orekit.pyhelpers import setup_orekit_curdir
-from org.orekit.time import AbsoluteDate, TimeScalesFactory
+from org.orekit.time import TimeScalesFactory
 
 from satkit import process_paths, u
 from satkit.propagation.tle import TLEUtils
@@ -20,29 +19,13 @@ from satkit.propagation.tle_list import (
     TleTimeSeries,
     TleValueFilterParams,
 )
-
-extra_path = Path(
-    "..",
-    "..",
-    "..",
-)
-
-orekit_data_file_path = Path("data", "orekit-data", "orekit-data-reference.zip")
+from satkit.time.time import AbsoluteDateExt
 
 alt_intermed_path = Path("satkit", "propagation", "tests")
 mixed_tle_file_path_1 = Path("data", "tle_mixed_1.txt")
 time_series_tle_file_path_1 = Path("data", "tle_rasat_desc.txt")
 time_series_tle_file_path_2 = Path("data", "tle_rasat.txt")
 starlink_tle_file_path_1 = Path("data", "starlink_tle.txt")
-
-
-def setup_module():
-    """setup any state specific to the execution of the module."""
-
-    #  Init Orekit data
-    data_file = process_paths(extra_path, orekit_data_file_path).resolve()
-
-    setup_orekit_curdir(str(data_file))
 
 
 def test_parse_storage_file():
@@ -185,7 +168,7 @@ def test_tle_timeseries_time_filter():
 
     tle_storage = TleStorage.from_path(file_path).to_tle_timeseries(37791)
 
-    threshold_time = AbsoluteDate(2021, 4, 1, 0, 0, 0.0, TimeScalesFactory.getUTC())
+    threshold_time = AbsoluteDateExt(2021, 4, 1, 0, 0, 0.0, TimeScalesFactory.getUTC())
     tle_storage_filtered = tle_storage.filter_by_range(
         TleRangeFilterParams.EPOCH, min_value=threshold_time
     )

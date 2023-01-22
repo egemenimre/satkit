@@ -7,36 +7,17 @@
 TLE class tests.
 
 """
-from pathlib import Path
-
 import pytest
-from orekit.pyhelpers import setup_orekit_curdir
 from org.orekit.bodies import OneAxisEllipsoid
 from org.orekit.frames import FramesFactory
 from org.orekit.propagation.analytical.tle import TLE, TLEPropagator
-from org.orekit.time import AbsoluteDate, TimeScalesFactory
+from org.orekit.time import TimeScalesFactory
 from org.orekit.utils import Constants, IERSConventions
 from pytest import approx
 
-from satkit import process_paths, u
+from satkit import u
 from satkit.propagation.tle import TleFactory, TLEUtils
-
-extra_path = Path(
-    "..",
-    "..",
-    "..",
-)
-
-orekit_data_file_path = Path("data", "orekit-data", "orekit-data-reference.zip")
-
-
-def setup_module():
-    """setup any state specific to the execution of the module."""
-
-    #  Init Orekit data
-    data_file = process_paths(extra_path, orekit_data_file_path).resolve()
-
-    setup_orekit_curdir(str(data_file))
+from satkit.time.time import AbsoluteDateExt
 
 
 @pytest.fixture
@@ -76,7 +57,7 @@ def test_init_geo(tle_geo):
     Check for longitude and the resulting TLE.
     """
 
-    epoch = AbsoluteDate(2020, 6, 10, 12, 13, 14.0, TimeScalesFactory.getUTC())
+    epoch = AbsoluteDateExt(2020, 6, 10, 12, 13, 14.0, TimeScalesFactory.getUTC())
     longitude = 42.0 * u.deg
 
     tle = TleFactory.init_geo(
