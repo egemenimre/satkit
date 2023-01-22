@@ -68,7 +68,7 @@ class TleFactory:
     @staticmethod
     @u.wraps(None, (None, "rad", None, None, None, None, None, None, None), False)
     def init_geo(
-        epoch: AbsoluteDate,
+        epoch: type[AbsoluteDate],
         longitude: float | Quantity,
         launch_year: int = 2000,
         launch_nr: int = 1,
@@ -86,7 +86,7 @@ class TleFactory:
 
         Parameters
         ----------
-        epoch : AbsoluteDate
+        epoch : type[AbsoluteDate]
             Epoch Time corresponding to the orbital elements (nominally very near
             the time of true ascending node passage)
         longitude : float or Quantity
@@ -183,7 +183,7 @@ class TleFactory:
         False,
     )
     def init_sso(
-        epoch: AbsoluteDate,
+        epoch: type[AbsoluteDate],
         altitude: float | Quantity,
         ltan: float,
         eccentricity: float = 0.0,
