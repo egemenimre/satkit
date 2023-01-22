@@ -42,9 +42,10 @@ You can find the source code on GitHub: <https://github.com/egemenimre/satkit>
 -   [Orekit](https://www.orekit.org) handles the orbital mechanics computations.
 -   [Orekit Python Wrapper](https://gitlab.orekit.org/orekit-labs/python-wrapper) provides a Python wrapper for Orekit.
 -   [Pint](https://github.com/hgrecco/pint) provides units and quantity support.
+-   [Portion](https://github.com/AlexandreDecan/portion) handles the time interval mechanics
 -   Pytest provides the testing framework
 
 
-## License
+## Licence
 
-This project is Copyright (c) Egemen Imre and licensed under the terms of the GNU GPL v3+ license.
+This project is Copyright (c) Egemen Imre and licensed under the terms of the GNU GPL v3+ licence.
