@@ -383,7 +383,7 @@ class TLEUtils:
 
         Returns
         -------
-        sma
+        sma : Quantity
             Semimajor axis with units [m]
         """
 
@@ -412,7 +412,7 @@ class TLEUtils:
 
         Returns
         -------
-        raan_drift_rate
+        Quantity
             RAAN drift rate in angles/time (e.g. deg/day)
         """
 
