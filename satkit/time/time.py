@@ -82,3 +82,9 @@ class AbsoluteDateExt(AbsoluteDate):
         """This is equivalent to `self.durationFrom(otherDate)`.
         Output in seconds as a `Quantity` object."""
         return self.durationFrom(other) * u.s
+
+    @u.wraps(None, (None, "s"), False)
+    def __add__(self, dt: Quantity) -> "AbsoluteDateExt":
+        """This is equivalent to `self.shiftedBy(dt)`.
+        Output is a new `AbsoluteDateExt` object."""
+        return self.shiftedBy(dt)
