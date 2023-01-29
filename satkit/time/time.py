@@ -39,6 +39,30 @@ class AbsoluteDateExt(AbsoluteDate):
         """
         return AbsoluteDateExt(self, float(dt))
 
+    @u.wraps(None, (None, None, "s"), False)
+    def isCloseTo(self, other_date: "TimeStamped", tolerance: float | Quantity) -> bool:
+        """
+        Check if the instance time is close to another.
+
+        Parameters
+        ----------
+        other_date : TimeStamped
+            the instant to compare this date to
+
+        tolerance : float or Quantity
+            the separation, in seconds, under which the two instants will be
+            considered close to each other
+
+        Returns
+        -------
+        bool
+            true if the duration between the instance and the argument is
+            strictly below the tolerance
+
+        """
+        # durationFrom and tolerance are guaranteed to be in seconds
+        return abs(self.durationFrom(other_date)) < tolerance
+
     def __lt__(self, other):
         return self.isBefore(other)
 
