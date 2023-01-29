@@ -215,7 +215,7 @@ class TleFactory:
 
         Parameters
         ----------
-        epoch : AbsoluteDate
+        epoch : type[AbsoluteDate]
             Epoch Time corresponding to the orbital elements (nominally very near
             the time of true ascending node passage)
         altitude : float or Quantity
