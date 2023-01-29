@@ -35,7 +35,7 @@ class OrbitUtils:
 
         Returns
         -------
-        sma
+        sma : Quantity
             Semimajor axis with units [m]
         """
 
@@ -59,7 +59,7 @@ class OrbitUtils:
 
         Returns
         -------
-        sma
+        sma : Quantity
             Mean motion with units [rad/s]
         """
 
@@ -98,7 +98,7 @@ class OrbitUtils:
 
         Returns
         -------
-        raan_drift_rate
+        raan_drift_rate : Quantity
             RAAN drift rate in angles/time (e.g. deg/day)
         """
 
