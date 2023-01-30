@@ -8,7 +8,7 @@ AbsoluteDate extended class.
 
 """
 
-from org.orekit.time import AbsoluteDate
+from org.orekit.time import AbsoluteDate, TimeStamped
 from pint import Quantity
 
 from satkit import u
@@ -18,6 +18,14 @@ class AbsoluteDateExt(AbsoluteDate):
     """
     Extends the Orekit `AbsoluteDate` class with added functionality.
     """
+
+    def __init__(self, *args):
+        if len(args) == 1 and isinstance(args[0], AbsoluteDate):
+            # This practically deep copies the input AbsoluteDate object
+            super().__init__(args[0], 0.0)
+        else:
+            # Generate the AbsoluteDateExt object
+            super().__init__(*args)
 
     @u.wraps(None, (None, "s"), False)
     def shiftedBy(self, dt: float | Quantity) -> "AbsoluteDateExt":

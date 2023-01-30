@@ -8,7 +8,7 @@ Time functions tests.
 
 """
 
-from org.orekit.time import TimeScalesFactory
+from org.orekit.time import AbsoluteDate, TimeScalesFactory
 
 from satkit import u
 from satkit.time.time import AbsoluteDateExt
@@ -50,3 +50,14 @@ def test_time_add_sub():
     assert dt2_sub == -240.0 * u.second
     assert dt3_sub == 240.0 * u.second
     assert dt4_sub == 120.0 * u.second
+
+
+def test_init():
+    """Tests the `AbsoluteDate` init."""
+    date1 = AbsoluteDate(2020, 7, 11, 00, 0, 0.0, TimeScalesFactory.getUTC())
+    date2 = AbsoluteDateExt(date1)
+
+    # print(type(date1))
+    # print(type(date2))
+
+    assert isinstance(date2, AbsoluteDateExt)
