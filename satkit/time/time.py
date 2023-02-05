@@ -10,6 +10,8 @@ AbsoluteDate extended class.
 from datetime import datetime
 from typing import Type, Union, overload
 
+import portion as p
+from orekit.pyhelpers import datetime_to_absolutedate
 from org.orekit.time import AbsoluteDate, TimeStamped
 from pint import Quantity
 
@@ -57,7 +59,7 @@ class AbsoluteDateExt(AbsoluteDate):
         return AbsoluteDateExt(self, float(dt))
 
     @u.wraps(None, (None, None, "s"), False)
-    def isCloseTo(self, other_date: "TimeStamped", tolerance: float | Quantity) -> bool:
+    def isCloseTo(self, other_date: TimeStamped, tolerance: float | Quantity) -> bool:
         """
         Check if the instance time is close to another.
 
@@ -78,7 +80,12 @@ class AbsoluteDateExt(AbsoluteDate):
 
         """
         # durationFrom and tolerance are guaranteed to be in seconds
-        return abs(self.durationFrom(other_date)) < tolerance
+        return abs(super().durationFrom(other_date)) < tolerance
+
+    def durationFrom(self, other: Type[AbsoluteDate]) -> Quantity:
+        """This is equivalent to `self.durationFrom(otherDate)`.
+        Output in seconds as a `Quantity` object."""
+        return super().durationFrom(other) * u.s
 
     def __lt__(self, other):
         if other == p.inf:
@@ -120,13 +127,36 @@ class AbsoluteDateExt(AbsoluteDate):
         else:
             return self.isAfter(other)
 
-    def __sub__(self, other: type[AbsoluteDate]) -> Quantity:
-        """This is equivalent to `self.durationFrom(otherDate)`.
-        Output in seconds as a `Quantity` object."""
-        return self.durationFrom(other) * u.s
+    @overload
+    @u.wraps(None, (None, "s"), False)
+    def __sub__(self, dt: Quantity | float) -> "AbsoluteDateExt":
+        ...
+
+    @overload
+    def __sub__(self, dt: "AbsoluteDateExt") -> Quantity:
+        ...
+
+    # This uses explicit `Union` as this scenario does not like the | operator
+    @u.wraps(None, (None, "s"), False)
+    def __sub__(
+        self, time: Union[Quantity, float, "AbsoluteDateExt"]
+    ) -> Union["AbsoluteDateExt", Quantity]:
+        """Subtract a date or a duration from `self`.
+
+        Depending on the input, this can be equivalent to:
+
+        - `self.shiftedBy(-time)`, where output is a new `AbsoluteDateExt` object.
+        - `self.durationFrom(time)`, where output is a `Quantity` object.
+        """
+        if isinstance(time, AbsoluteDate):
+            return self.durationFrom(time)
+        else:
+            return self.shiftedBy(-time)
 
     @u.wraps(None, (None, "s"), False)
-    def __add__(self, dt: Quantity) -> "AbsoluteDateExt":
-        """This is equivalent to `self.shiftedBy(dt)`.
+    def __add__(self, time: Quantity | float) -> "AbsoluteDateExt":
+        """Add a duration to `self`.
+
+        This is equivalent to `self.shiftedBy(time)`.
         Output is a new `AbsoluteDateExt` object."""
-        return self.shiftedBy(dt)
+        return self.shiftedBy(time)
