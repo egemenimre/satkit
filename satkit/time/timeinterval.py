@@ -43,7 +43,6 @@ class TimeInterval:
         start_inclusive=True,
         end_inclusive=True,
     ):
-
         # upgrade to AbsoluteDateExt and deep copy in the process
         start_interval = AbsoluteDateExt(start_time)
         end_interval = AbsoluteDateExt(end_time)
@@ -57,7 +56,6 @@ class TimeInterval:
 
     @classmethod
     def _validate(cls, start_time, end_time, start_inclusive, end_inclusive) -> bool:
-
         if isinstance(start_time, AbsoluteDate) and isinstance(end_time, AbsoluteDate):
             # start and end times are AbsoluteDate or a subclass
 
@@ -94,7 +92,6 @@ class TimeInterval:
         start_inclusive=True,
         end_inclusive=True,
     ):
-
         # validate the inputs
         if cls._validate(start_time, end_time, start_inclusive, end_inclusive):
             return super().__new__(cls)
@@ -468,7 +465,6 @@ class TimeIntervalList:
     """
 
     def __init__(self, intervals, valid_interval=None):
-
         self._intervals: list = []
 
         if intervals:
@@ -832,7 +828,6 @@ class TimeIntervalList:
 
         # Fill the atomic `TimeInterval` objects using the merged list
         for p_interval in p_intervals:
-
             # check for empty instances
             if not p_interval.lower.isCloseTo(p_interval.upper, _EPS_TIME):
                 # duration not empty, add the interval
