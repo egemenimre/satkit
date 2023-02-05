@@ -7,6 +7,8 @@
 AbsoluteDate extended class.
 
 """
+from datetime import datetime
+from typing import Type, Union, overload
 
 from org.orekit.time import AbsoluteDate, TimeStamped
 from pint import Quantity
@@ -20,9 +22,16 @@ class AbsoluteDateExt(AbsoluteDate):
     """
 
     def __init__(self, *args):
+        """Extends the Orekit `AbsoluteDate` class with added functionality.
+
+        Input can be an `AbsoluteDate`, `datetime` or the usual
+        :class:`AbsoluteDate` initialisation options."""
         if len(args) == 1 and isinstance(args[0], AbsoluteDate):
             # This practically deep copies the input AbsoluteDate object
             super().__init__(args[0], 0.0)
+        elif len(args) == 1 and isinstance(args[0], datetime):
+            # This converts datetime into an input AbsoluteDate object
+            super().__init__(datetime_to_absolutedate(args[0]), 0.0)
         else:
             # Generate the AbsoluteDateExt object
             super().__init__(*args)
