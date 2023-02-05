@@ -72,19 +72,44 @@ class AbsoluteDateExt(AbsoluteDate):
         return abs(self.durationFrom(other_date)) < tolerance
 
     def __lt__(self, other):
-        return self.isBefore(other)
+        if other == p.inf:
+            return self.isBefore(AbsoluteDateExt.FUTURE_INFINITY)
+        elif other == -p.inf:
+            return self.isBefore(AbsoluteDateExt.PAST_INFINITY)
+        else:
+            return self.isBefore(other)
 
     def __le__(self, other):
-        return self.isBeforeOrEqualTo(other)
+        if other == p.inf:
+            return self.isBeforeOrEqualTo(AbsoluteDateExt.FUTURE_INFINITY)
+        elif other == -p.inf:
+            return self.isBeforeOrEqualTo(AbsoluteDateExt.PAST_INFINITY)
+        else:
+            return self.isBeforeOrEqualTo(other)
 
     def __eq__(self, other):
-        return self.isEqualTo(other)
+        if other == p.inf:
+            return self.isEqualTo(AbsoluteDateExt.FUTURE_INFINITY)
+        elif other == -p.inf:
+            return self.isEqualTo(AbsoluteDateExt.PAST_INFINITY)
+        else:
+            return self.isEqualTo(other)
 
     def __ge__(self, other):
-        return self.isAfterOrEqualTo(other)
+        if other == p.inf:
+            return self.isAfterOrEqualTo(AbsoluteDateExt.FUTURE_INFINITY)
+        elif other == -p.inf:
+            return self.isAfterOrEqualTo(AbsoluteDateExt.PAST_INFINITY)
+        else:
+            return self.isAfterOrEqualTo(other)
 
     def __gt__(self, other):
-        return self.isAfter(other)
+        if other == p.inf:
+            return self.isAfter(AbsoluteDateExt.FUTURE_INFINITY)
+        elif other == -p.inf:
+            return self.isAfter(AbsoluteDateExt.PAST_INFINITY)
+        else:
+            return self.isAfter(other)
 
     def __sub__(self, other: type[AbsoluteDate]) -> Quantity:
         """This is equivalent to `self.durationFrom(otherDate)`.
