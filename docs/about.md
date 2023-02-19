@@ -48,13 +48,8 @@ This project is Copyright (c) Egemen Imre and licensed under the terms of the GN
 
 ## About the Author
 
-My name is [Egemen Imre](https://twitter.com/uyducusirin), the author of satkit. While this project has really been yet
-another excuse to learn Python for me, for more than 20 years I have been developing Orbital Mechanics software
-professionally for topics ranging from satellite mission analysis and design, to actual satellite operations.
+My name is [Egemen Imre](https://twitter.com/uyducusirin), the author of satkit. While this project has really been yet another excuse to learn Python for me, for more than 20 years I have been developing Orbital Mechanics software professionally for topics ranging from satellite mission analysis and design, to actual satellite operations.
 
 ## Acknowledgements
 
-The guys at CS deserve praise for the excellent open-source [Orekit](https://www.orekit.org) orbital mechanics library
-written in Java. While the interface is occasionally mind-boggling, the breadth of functions is simply amazing. Petrus
-Hyvönen has been maintaining the [Orekit Python Wrapper](https://gitlab.orekit.org/orekit-labs/python-wrapper), which
-opened the doors of Orekit to Python.
+The folks at CS deserve praise for the excellent open-source [Orekit](https://www.orekit.org) orbital mechanics library written in Java. While the interface is occasionally mind-boggling, the breadth of functions is simply amazing. Petrus Hyvönen has been maintaining the [Orekit Python Wrapper](https://gitlab.orekit.org/orekit-labs/python-wrapper), which opened the doors of Orekit to Python.
