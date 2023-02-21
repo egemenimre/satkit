@@ -21,7 +21,7 @@ from satkit.propagation.tle_list import (
 )
 from satkit.time.time import AbsoluteDateExt
 
-alt_intermed_path = Path("satkit", "propagation", "tests")
+alt_intermed_path = Path("tests", "propagation")
 mixed_tle_file_path_1 = Path("data", "tle_mixed_1.txt")
 time_series_tle_file_path_1 = Path("data", "tle_rasat_desc.txt")
 time_series_tle_file_path_2 = Path("data", "tle_rasat.txt")
