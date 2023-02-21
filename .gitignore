@@ -136,7 +136,7 @@ dmypy.json
 .pyre/
 
 # Other temporary stuff and large data dirs
-satkit/temp
+temp
 /data/orekit-data/orekit-data-master.zip
 /data/orekit-data/orekit-data-master/
 /test-results/
