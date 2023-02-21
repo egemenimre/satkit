@@ -20,7 +20,7 @@ from satkit.propagation.tle import TleDefaultUnits
 
 
 class TleRangeFilterParams(Enum):
-    """TLE Filtering Parameters."""
+    """TLE Range Filtering Parameters."""
 
     EPOCH = "date"
     DATE = "date"
@@ -44,7 +44,7 @@ class TleRangeFilterParams(Enum):
 
 
 class TleValueFilterParams(Enum):
-    """TLE Filtering Parameters."""
+    """TLE Value Filtering Parameters."""
 
     SAT_NR = "satelliteNumber"
     LAUNCH_NR = "launchNumber"
