@@ -4,7 +4,8 @@
 #
 # Licensed under GNU GPL v3.0. See LICENSE.rst for more info.
 """
-Propagation tests.
+Tests for time and related items.
+
 """
 
 from pathlib import Path
@@ -14,7 +15,6 @@ from orekit.pyhelpers import setup_orekit_curdir
 from satkit import process_paths
 
 extra_path = Path(
-    "..",
     "..",
     "..",
 )
