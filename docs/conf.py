@@ -9,7 +9,7 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
+
 import os
 import sys
 
@@ -37,19 +37,23 @@ highlight_language = "python3"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "autoapi.extension",
+    # "autoapi.extension",
     "sphinx.ext.autodoc",  # auto api generation
+    "sphinx.ext.autosummary",  # summary tables for modules/classes/methods etc
+    "sphinx_autodoc_typehints",  # Automatically document param types
     "sphinx.ext.napoleon",  # numpy support
     "sphinx.ext.todo",
     "sphinx.ext.intersphinx",  # Link mapping to external projects
-    # "nbsphinx",  # Jupyter notebook support
     "sphinx.ext.mathjax",  # LaTex style math
     "sphinx.ext.graphviz",  # Dependency diagrams
+    "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "notfound.extension",
     "hoverxref.extension",
+    "sphinx.ext.githubpages",
     "sphinx.ext.doctest",  # Doctest
     "myst_parser",  # MyST parser
+    "nbsphinx",  # Jupyter notebook support
 ]
 numpydoc_show_class_members = False
 
@@ -83,8 +87,25 @@ else:
 # Controls when a cell will time out (defaults to 30; use -1 for no timeout):
 nbsphinx_timeout = 1000
 
-# renderi type annotations as parameter types and return types.
+# render type annotations as parameter types and return types.
 autodoc_typehints = "description"
+
+# -- Options for autosummary and autodoc -------------------------------------------------
+
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
+autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+}
+html_show_sourcelink = (
+    False  # Remove 'view source code' from top of page (for html, not python)
+)
+autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
+set_type_checking_flag = True  # Enable imports for sphinx_autodoc_typehints
+nbsphinx_allow_errors = True  # Continue through Jupyter errors
+# autodoc_typehints = "description" # Sphinx-native method. Not as good as sphinx_autodoc_typehints
+add_module_names = False  # Remove namespaces from class/method signatures
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -104,21 +125,21 @@ myst_update_mathjax = False
 
 # -- Options for Sphinx-autoapi output -------------------------------------------
 
-# sphinx-autoapi configuration
-autoapi_type = "python"
-autoapi_dirs = ["../satkit/"]
-autoapi_options = [
-    "members",  # Display children of an object
-    "inherited-members",  # Display children of an object that have been inherited from a base class.
-    "undoc-members",  # Display objects that have no docstring
-    "show-inheritance",  # Display a list of base classes below the class signature.
-    "show-module-summary",  # include autosummary directives in generated module documentation.
-    # "special-members", # special objects: __foo__
-]
-autoapi_ignore = [
-    "test*",  # Ignore tests
-]
-autoapi_add_toctree_entry = True  # Generate autoapi index page
+# autoapi_type = "python"
+# autoapi_dirs = ["../satkit/"]
+# autoapi_file_patterns = ["*.py"]
+# autoapi_options = [
+#     "members",  # Display children of an object
+#     "inherited-members",  # Display children of an object that have been inherited from a base class.
+#     "undoc-members",  # Display objects that have no docstring
+#     "show-inheritance",  # Display a list of base classes below the class signature.
+#     "show-module-summary",  # include autosummary directives in generated module documentation.
+#     # "special-members", # special objects: __foo__
+# ]
+# autoapi_ignore = [
+#     "test*",  # Ignore tests
+# ]
+# autoapi_add_toctree_entry = True  # Generate autoapi index page
 
 # -- Options for hoverxref -------------------------------------------
 hoverxref_auto_ref = True
