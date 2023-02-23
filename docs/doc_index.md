@@ -6,8 +6,8 @@
 ---
 maxdepth: 2
 ---
-propagation/orbits_utils
-propagation/tle_storage
+usagedocs/propagation/orbits_utils
+usagedocs/propagation/tle_storage
 ```
 
 ## Time and Coordinates
@@ -16,8 +16,8 @@ propagation/tle_storage
 ---
 maxdepth: 2
 ---
-time/absolutedateext
-time/timeinterval
+usagedocs/time/time
+usagedocs/time/timeinterval
 
 ```
 
