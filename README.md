@@ -18,13 +18,13 @@ Currently, there is limited functionality, with time interval management and TLE
 
 The documentation for satkit is here: <https://satkit.readthedocs.io/>
 
-As a quick-start, you can find some hands-on Jupyter examples in
-the [tutorials directory](https://github.com/egemenimre/satkit/tree/master/docs/tutorials) (or in
-the [documentation](https://satkit.readthedocs.io/en/latest/tutorials.html) for a text version).
+As a quick-start, you can find some hands-on Jupyter examples in the [tutorials directory](https://github.com/egemenimre/satkit/tree/master/docs/tutorials) (or in the [documentation](https://satkit.readthedocs.io/en/latest/tutorials.html) for a text version).
+
 
 ## Using satkit
 
 You can find the source code on GitHub: <https://github.com/egemenimre/satkit>
+
 
 ## Requirements
 
@@ -34,6 +34,7 @@ You can find the source code on GitHub: <https://github.com/egemenimre/satkit>
 - [Pint](https://github.com/hgrecco/pint) provides units and quantity support.
 - [Portion](https://github.com/AlexandreDecan/portion) handles the time interval mechanics
 - Pytest provides the testing framework
+
 
 ## Licence
 
