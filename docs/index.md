@@ -18,8 +18,11 @@ getting_started
 tutorials
 doc_index
 references
-autoapi/index
+api_index
 ```
+
+
+
 
 ## Changelog
 
