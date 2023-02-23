@@ -4,9 +4,7 @@
 #
 # Licensed under GNU GPL v3.0. See LICENSE.rst for more info.
 """
-satkit
-=========
-Satellite Mission Analysis and Design in Python.
+satkit entry module.
 """
 __version__ = "0.0.1"
 
