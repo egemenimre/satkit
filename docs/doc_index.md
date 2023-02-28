@@ -10,7 +10,7 @@ usagedocs/propagation/orbits_utils
 usagedocs/propagation/tle_storage
 ```
 
-## Time and Coordinates
+## Working with Time and Intervals
 
 ```{toctree} 
 ---
