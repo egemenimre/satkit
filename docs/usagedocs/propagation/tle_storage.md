@@ -2,7 +2,7 @@
 
 ## Lists of Mixed TLEs: {py:class}`.TleStorage`
 
-Many applications require working with TLEs from a number of satellites (for example satellites from the same launch or belonging to the same constellation). `satkit` enables loading and flexible filtering of such TLE lists using the {py:class}`.TleStorage` class. A fully functional example of these functionalities can be found in the [tutorials](../../tutorials).
+Many applications require working with TLEs from a number of satellites (for example satellites from the same launch or belonging to the same constellation). `satkit` enables loading and flexible filtering of such TLE lists using the {py:class}`.TleStorage` class. A fully functional example of these functionalities can be found in the [tutorials](../../tutorials/tle_lists.ipynb).
 
 A {py:class}`.TleStorage` object can be initialised either from a file ({py:meth}`.TleStorage.from_path`) or a string ({py:meth}`.TleStorage.from_string`) containing a list of TLE data. The third option is to initialise the storage object using another TLE list, which is shallow copied into the object.
 
@@ -20,14 +20,14 @@ tle_storage_3 = TleStorage(tle_storage_2.tle_list)
 Note that, the contents of the {py:class}`.TleStorage` object are stored in a list called `tle_list`. 
 
 (tle_storage/filtering)=
-## Extracting Specific Data from the Lists (Filtering)
+## Extracting Specific Data from the Lists: Filtering
 
 The {py:class}`.TleStorage` object offers a number of filtering options:
 - filtering by value: look for a match to a specific value
 - filtering by range: look for a range of values
 - filtering by function: look for matches or range of values with a custom function
 
-"Filtering by value" is useful to match a specific identifier in the list, for example a satellite ID number or, satellites from a certain launch. The enumerator {py:class}`.TleValueFilterParams` is used to identify the parameter to be matched.
+"Filtering by value” is useful to match a specific identifier in the list, for example a satellite ID number or, satellites from a certain launch. The enumerator {py:class}`.TleValueFilterParams` is used to identify the parameter to be matched.
 ```
 filtered_list_1 = tle_storage_1.filter_by_value(TleValueFilterParams.SAT_NR, 46495)
 ```
@@ -80,7 +80,7 @@ def sma_filter(tle):
 filtered_list_sma_1 = tle_storage_1.filter_by_func(sma_filter)
 ```
 
-The filters can be chained to generate a more complex filtering function. For example the following filters for the satellites with the number "46495" and then by a minimum TLE epoch, to create a list of the TLEs of a specific satellite after a certain epoch.
+The filters can be chained to generate a more complex filtering function. For example the following filters for the satellites with the number “46495” and then by a minimum TLE epoch, to create a list of the TLEs of a specific satellite after a certain epoch.
 
 ```
 threshold_time = AbsoluteDate("2021-02-01T00:00:00.000", TimeScalesFactory.getUTC())
