@@ -20,7 +20,7 @@ Therefore, over a trajectory generated with a two-body force model, the Osculati
 
 The {py:class}`.OrbitUtils` class contains some useful conversions and extra parameter computations.
 
-The first one, {py:meth}`.OrbitUtils.compute_sma` converts the mean motion into semimajor axis. The input can be given as a `Quantity` object with units (for example in "radians per second" or "degrees per minute") or without units (reverting to the default "radians per second"). The output is always a `Quantity` object with units. The reverse method {py:meth}`.OrbitUtils.compute_mean_mot` takes in a semimajor axis (with units or defaulting to "metres") and outputs the mean motion value with units.
+The first one, {py:meth}`.OrbitUtils.compute_sma` converts the mean motion into semimajor axis. The input can be given as a `Quantity` object with units (for example in "radians per second” or “degrees per minute") or without units (reverting to the default “radians per second"). The output is always a `Quantity` object with units. The reverse method {py:meth}`.OrbitUtils.compute_mean_mot` takes in a semimajor axis (with units or defaulting to "metres") and outputs the mean motion value with units.
 
 The {py:meth}`.OrbitUtils.compute_raan_drift_rate` is a more complex computation, taking mean semimajor axis, eccentricity and inclination as inputs, and outputting the drift of the Right Ascension of the Ascending Node (or, more generally, the drift of the orbital plane), with $J_2$ only or with additional $J_4$ and $J^2_2$ terms for higher precision. This enables the user to check the current orbit drift rates of orbits, particularly if the satellite is supposed to be on a special orbit like Molniya or Sun-Synchronous.
 
@@ -56,7 +56,7 @@ In addition to the usual classical orbital elements, other components of the TLE
 
 * International Designator (COSPAR ID or NSSDCA ID): The unique string representation of the object in space. The field in the TLE `98067A` means 1998-067A, which means the Object A belonging to the 67th launch in the year 1998.
 
-* Ballistic Coefficient: Also called the first derivative of mean motion, this is the daily rate of change in the number of revs the object completes each day, divided by 2. Units are revs/day. This is "catch all" drag term used in the Simplified General Perturbations (SGP4) USSPACECOM predictor.
+* Ballistic Coefficient: Also called the first derivative of mean motion, this is the daily rate of change in the number of revs the object completes each day, divided by 2. Units are revs/day. This is “catch all” drag term used in the Simplified General Perturbations (SGP4) USSPACECOM predictor.
 
 * Second Derivative of Mean Motion: The second derivative of mean motion is a second order drag term in the SGP4 propagator used to model terminal orbit decay. It measures the second time derivative in daily mean motion, divided by 6. Units are $revs/day^3$.
 
@@ -64,7 +64,7 @@ In addition to the usual classical orbital elements, other components of the TLE
 
 ## Initialising the TLEs
 
-While a TLE can be initialised using the regular Orekit `TLE` constructor by specifying the large number of initial parameters, by far the most usual way is to use initialise it with the regular two line input from an external source (see  [Introduction to TLEs Section](#introduction-to-tles) for an example). Some external sources to retrieve TLEs are listed in [TLE Repositories Section](#common-tle-repositories).
+While a TLE can be initialised using the regular Orekit `TLE` constructor by specifying the large number of initial parameters, by far the most usual way is to use initialise it with the regular two line input from an external source (see [Introduction to TLEs Section](#introduction-to-tles) for an example). Some external sources to retrieve TLEs are listed in [TLE Repositories Section](#common-tle-repositories).
 
 Another way to initialise a TLE is by orbit type. For example, initialising a geostationary satellite TLE is as easy as defining a reference time and a target longitude:
 
