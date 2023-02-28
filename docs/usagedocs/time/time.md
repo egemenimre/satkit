@@ -15,7 +15,7 @@ An Orekit `AbsoluteDate` object can be converted to {py:class}`.AbsoluteDateExt`
     >>> date3 = date1.shiftedBy(+4 * u.min)  # Quantity
     >>> date4 = date1.shiftedBy(+120)  # int
 
-As can be seen, the "extended" version of the `AbsoluteDate` can now work with units (saving a lot of unnecessary conversion errors), can default to "seconds" when no unit is supplied (just like `AbsoluteDate` does) and, unlike `AbsoluteDate`, it can now handle `int` input.
+As can be seen, the “extended” version of the `AbsoluteDate` can now work with units (saving a lot of unnecessary conversion errors), can default to “seconds” when no unit is supplied (just like `AbsoluteDate` does) and, unlike `AbsoluteDate`, it can now handle `int` input.
 
 Similar support exists for {py:meth}`.AbsoluteDateExt.durationFrom` and `{py:meth}.AbsoluteDateExt.isCloseTo` methods. Therefore, the output of the {py:meth}`.AbsoluteDateExt.durationFrom` is a `Quantity` object, expressing time properly with units.
 
