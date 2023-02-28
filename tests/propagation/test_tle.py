@@ -126,8 +126,8 @@ def test_init_sso(tle_sso):
     # print(tle_sso)
     # print(tle)
 
-    # print(tle_sso.node_rotation_rate())
-    # print(tle.node_rotation_rate())
+    # print(TLEUtils.compute_raan_drift_rate(tle))
+    # print(TLEUtils.compute_raan_drift_rate(tle_sso))
 
     # print((tle_sso.getRaan() * u.rad).to("deg"))
     # print((tle.getRaan() * u.rad).to("deg"))
