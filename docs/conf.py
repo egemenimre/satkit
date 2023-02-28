@@ -13,7 +13,6 @@
 import os
 import sys
 
-
 sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
@@ -75,8 +74,8 @@ master_doc = "index"
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
-    "matplotlib": ("https://matplotlib.org", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
 }
 
 if os.environ.get("READTHEDOCS") == "True":
@@ -119,9 +118,10 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-# -- Options for Texinfo output -------------------------------------------
+# -- Options for Myst -------------------------------------------
 
 myst_update_mathjax = False
+myst_heading_anchors = 3  # generate labels for heading anchors
 
 # -- Options for Sphinx-autoapi output -------------------------------------------
 
