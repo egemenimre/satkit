@@ -105,7 +105,7 @@ class _TleList(ABC):
         # create new object with the filtered list
         return self._selfcopy(filtered_list)
 
-    def filter_by_func(self, filter_func):
+    def filter_by_func(self, filter_func, *args, **kwargs):
         """
         Filters the TLE list for compliance to a given filter function.
 
@@ -149,7 +149,9 @@ class _TleList(ABC):
         TleStorage
             A `TleStorage` object that contains the filtered list of TLE data
         """
-        filtered_list = [tle for tle in self.tle_list if filter_func(tle)]
+        filtered_list = [
+            tle for tle in self.tle_list if filter_func(tle, *args, **kwargs)
+        ]
 
         # create new object with the filtered list
         return self._selfcopy(filtered_list)

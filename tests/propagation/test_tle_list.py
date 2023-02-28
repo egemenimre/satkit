@@ -84,21 +84,26 @@ def test_filter_func():
 
     tle_storage = TleStorage.from_path(file_path)
 
-    def sma_filter_1(tle):
+    a_7000 = 7000 * u.km
+    a_7100 = 7100 * u.km
+
+    def sma_filter_1(tle, a_min):
         """Semimajor axis filter min."""
-        return True if TLEUtils.compute_sma(tle) > 7000 * u.km else False
+        return True if TLEUtils.compute_sma(tle) > a_min else False
 
     def sma_filter_2(tle):
         """Semimajor axis filter max."""
         return True if 7000 * u.km > TLEUtils.compute_sma(tle) else False
 
-    def sma_filter_3(tle):
+    def sma_filter_3(tle, a_max, a_min):
         """Semimajor axis filter min/max."""
-        return True if 7100 * u.km > TLEUtils.compute_sma(tle) > 7000 * u.km else False
+        return True if a_max > TLEUtils.compute_sma(tle) > a_min else False
 
-    filtered_list_sma_1 = tle_storage.filter_by_func(sma_filter_1)
+    filtered_list_sma_1 = tle_storage.filter_by_func(sma_filter_1, a_7000)
     filtered_list_sma_2 = tle_storage.filter_by_func(sma_filter_2)
-    filtered_list_sma_3 = tle_storage.filter_by_func(sma_filter_3)
+    filtered_list_sma_3 = tle_storage.filter_by_func(
+        sma_filter_3, a_max=a_7100, a_min=a_7000
+    )
 
     assert len(filtered_list_sma_1.tle_list) == 11
     assert len(filtered_list_sma_2.tle_list) == 8
