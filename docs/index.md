@@ -11,24 +11,29 @@ Check the source code here: <https://github.com/egemenimre/satkit>
 ```{toctree} 
 ---
 maxdepth: 2
+caption: Getting to learn `satkit`
 ---
-
-about
 getting_started
 tutorials
+```
+
+```{toctree} 
+---
+maxdepth: 2
+caption: Understanding `satkit`
+---
+about
 doc_index
+```
+
+```{toctree} 
+---
+maxdepth: 2
+caption: References
+---
+changelog
 references
 api_index
 ```
 
 
-
-
-## Changelog
-
-```{toctree} 
----
-maxdepth: 2
----
-changelog
-```
