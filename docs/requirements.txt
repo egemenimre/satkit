@@ -2,3 +2,4 @@ ipykernel
 nbsphinx
 myst_parser
 sphinx_autodoc_typehints
+sphinx_copybutton
