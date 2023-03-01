@@ -6,9 +6,9 @@ dependencies:
   - pint
   - numpy
   - scipy
-  - matplotlib
   - portion
-# document generation
+  - matplotlib
+# packages needed for document generation
   - pip:
       - ipykernel
       - nbsphinx
