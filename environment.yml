@@ -8,3 +8,12 @@ dependencies:
   - scipy
   - matplotlib
   - portion
+# document generation
+  - pip:
+      - ipykernel
+      - nbsphinx
+      - myst_parser
+      - sphinx_autodoc_typehints
+      - sphinx_copybutton
+      - sphinx-notfound-page
+      - sphinx-hoverxref
