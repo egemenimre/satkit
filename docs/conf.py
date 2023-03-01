@@ -53,6 +53,7 @@ extensions = [
     "sphinx.ext.doctest",  # Doctest
     "myst_parser",  # MyST parser
     "nbsphinx",  # Jupyter notebook support
+    "sphinx_rtd_theme",  # read the docs theme
 ]
 numpydoc_show_class_members = False
 
