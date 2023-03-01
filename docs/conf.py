@@ -120,9 +120,11 @@ html_static_path = ["_static"]
 
 # -- Options for Myst -------------------------------------------
 
-myst_update_mathjax = False
 myst_heading_anchors = 3  # generate labels for heading anchors
-
+myst_enable_extensions = [
+    "dollarmath",  # parse $...$ as equations
+    "amsmath",  # LaTex math
+]
 # -- Options for Sphinx-autoapi output -------------------------------------------
 
 # autoapi_type = "python"
