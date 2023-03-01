@@ -6,9 +6,7 @@ You can find the source code on GitHub: <https://github.com/egemenimre/satkit>
 
 ## Documentation and Examples
 
-The documentation for satkit is here: <https://satkit.readthedocs.io/>
-
-As a quick-start, you can find some hands-on Jupyter examples in the [tutorials directory](https://github.com/egemenimre/satkit/tree/master/docs/tutorials) in GitHub (or in the [documentation](tutorials.md) for a text version).
+As a quick-start, you can find some hands-on Jupyter examples in the [tutorials directory in GitHub](https://github.com/egemenimre/satkit/tree/master/docs/tutorials) or in the [documentation](tutorials.md) for a text version (includes Binder links for the interactive versions).
 
 ## Dependencies
 
