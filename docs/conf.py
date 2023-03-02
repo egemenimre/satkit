@@ -53,7 +53,7 @@ extensions = [
     "sphinx.ext.doctest",  # Doctest
     "myst_parser",  # MyST parser
     "nbsphinx",  # Jupyter notebook support
-    "sphinx_rtd_theme",  # read the docs theme
+    # "sphinx_rtd_theme",  # read the docs theme
 ]
 numpydoc_show_class_members = False
 
@@ -79,6 +79,23 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable/", None),
 }
 
+# -- Options for HTML output -------------------------------------------------
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [
+    "_themes",
+]
+
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ["_static"]
+
+# -- Options for nbsphinx -------------------------------------------------
+
 if os.environ.get("READTHEDOCS") == "True":
     nbsphinx_execute = "never"
 else:
@@ -86,9 +103,6 @@ else:
 
 # Controls when a cell will time out (defaults to 30; use -1 for no timeout):
 nbsphinx_timeout = 1000
-
-# render type annotations as parameter types and return types.
-autodoc_typehints = "description"
 
 # -- Options for autosummary and autodoc -------------------------------------------------
 
@@ -104,20 +118,13 @@ html_show_sourcelink = (
 autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
 set_type_checking_flag = True  # Enable imports for sphinx_autodoc_typehints
 nbsphinx_allow_errors = True  # Continue through Jupyter errors
-# autodoc_typehints = "description" # Sphinx-native method. Not as good as sphinx_autodoc_typehints
 add_module_names = False  # Remove namespaces from class/method signatures
 
-# -- Options for HTML output -------------------------------------------------
+# render type annotations as parameter types and return types.
+# autodoc_typehints = "description" # Sphinx-native method. Not as good as sphinx_autodoc_typehints
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
 
-html_theme = "sphinx_rtd_theme"
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+autodoc_typehints = "description"
 
 # -- Options for Myst -------------------------------------------
 
