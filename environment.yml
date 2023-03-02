@@ -9,6 +9,8 @@ dependencies:
   - portion
   - matplotlib
 # packages needed for document generation
+#  - python=3.11
+  - pip
   - pip:
       - ipykernel
       - nbsphinx
