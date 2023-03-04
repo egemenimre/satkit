@@ -9,7 +9,7 @@ jobs:
   tests:
 
     docker:
-      - image: continuumio/miniconda3
+      - image: condaforge/mambaforge
 
     parallelism: 2
 
