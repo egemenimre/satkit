@@ -50,7 +50,7 @@ jobs:
   codestyle:
 
     docker:
-      - image: continuumio/miniconda3
+      - image: condaforge/mambaforge
 
     steps:
       # Get repo from GitHub
