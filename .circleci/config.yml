@@ -9,7 +9,7 @@ jobs:
   tests:
 
     docker:
-      - image: condaforge/mambaforge
+      - image: continuumio/miniconda3
 
     parallelism: 2
 
@@ -50,7 +50,7 @@ jobs:
   codestyle:
 
     docker:
-      - image: condaforge/mambaforge
+      - image: continuumio/miniconda3
 
     steps:
       # Get repo from GitHub
