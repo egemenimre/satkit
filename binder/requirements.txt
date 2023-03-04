@@ -1,3 +1,0 @@
-# For application deployments, like Binder
-satkit
-jupytext
