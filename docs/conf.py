@@ -159,3 +159,8 @@ hoverxref_intersphinx = [
     "scipy",
     "matplotlib",
 ]
+
+# -- Options for copybutton -------------------------------------------
+
+# exclude traditional Python prompts from the copied code
+copybutton_prompt_text = ">>> "
