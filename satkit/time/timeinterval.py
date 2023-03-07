@@ -37,11 +37,11 @@ class TimeInterval:
     _interval: Interval = None
 
     def __init__(
-        self,
-        start_time: Type[AbsoluteDate],
-        end_time: Type[AbsoluteDate],
-        start_inclusive=True,
-        end_inclusive=True,
+            self,
+            start_time: Type[AbsoluteDate],
+            end_time: Type[AbsoluteDate],
+            start_inclusive=True,
+            end_inclusive=True,
     ):
         # upgrade to AbsoluteDateExt and deep copy in the process
         start_interval = AbsoluteDateExt(start_time)
@@ -86,11 +86,11 @@ class TimeInterval:
         return True
 
     def __new__(
-        cls,
-        start_time: Type[AbsoluteDate],
-        end_time: Type[AbsoluteDate],
-        start_inclusive=True,
-        end_inclusive=True,
+            cls,
+            start_time: Type[AbsoluteDate],
+            end_time: Type[AbsoluteDate],
+            start_inclusive=True,
+            end_inclusive=True,
     ):
         # validate the inputs
         if cls._validate(start_time, end_time, start_inclusive, end_inclusive):
@@ -99,10 +99,10 @@ class TimeInterval:
     @u.wraps(None, (None, "s", None, None), False)
     @staticmethod
     def from_duration(
-        start_time: Type[AbsoluteDate],
-        duration: float | Quantity,
-        start_inclusive=True,
-        end_inclusive=True,
+            start_time: Type[AbsoluteDate],
+            duration: float | Quantity,
+            start_inclusive=True,
+            end_inclusive=True,
     ) -> "TimeInterval":
         """
         Generates a TimeInterval object from a start time and a duration.
@@ -318,11 +318,11 @@ class TimeInterval:
 
     @u.wraps(None, (None, "s", "s", None, None), False)
     def expand(
-        self,
-        start_delta=0,
-        end_delta=0,
-        start_inclusive=True,
-        end_inclusive=True,
+            self,
+            start_delta=0,
+            end_delta=0,
+            start_inclusive=True,
+            end_inclusive=True,
     ):
         """
         Expands (or shrinks) the interval.
@@ -812,12 +812,12 @@ class TimeIntervalList:
     @staticmethod
     def _to_time_intervals(p_intervals):
         """
-        Converts a `Interval` list to a `TimeInterval` list.
+        Converts a `pint` `Interval` list to a `TimeInterval` list.
 
         Parameters
         ----------
         p_intervals : Interval
-            List of intervals
+            List of intervals (pint Interval objects)
 
         Returns
         -------
