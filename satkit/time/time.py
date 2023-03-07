@@ -23,7 +23,7 @@ class AbsoluteDateExt(AbsoluteDate):
     Extends the Orekit `AbsoluteDate` class with added functionality.
     """
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         """Extends the Orekit `AbsoluteDate` class with added functionality.
 
         Input can be an `AbsoluteDate`, `datetime` or the usual
@@ -36,7 +36,7 @@ class AbsoluteDateExt(AbsoluteDate):
             super().__init__(datetime_to_absolutedate(args[0]), 0.0)
         else:
             # Generate the AbsoluteDateExt object
-            super().__init__(*args)
+            super().__init__(*args, **kwargs)
 
     @u.wraps(None, (None, "s"), False)
     def shiftedBy(self, dt: float | Quantity) -> "AbsoluteDateExt":
@@ -139,7 +139,7 @@ class AbsoluteDateExt(AbsoluteDate):
     # This uses explicit `Union` as this scenario does not like the | operator
     @u.wraps(None, (None, "s"), False)
     def __sub__(
-        self, time: Union[Quantity, float, "AbsoluteDateExt"]
+            self, time: Union[Quantity, float, "AbsoluteDateExt"]
     ) -> Union["AbsoluteDateExt", Quantity]:
         """Subtract a date or a duration from `self`.
 
