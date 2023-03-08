@@ -464,7 +464,7 @@ class TimeIntervalList:
         Time interval within which this `TimeInterval` is valid
     """
 
-    def __init__(self, intervals, valid_interval=None):
+    def __init__(self, intervals: list[TimeInterval], valid_interval=None):
         self._intervals: list = []
 
         if intervals:
