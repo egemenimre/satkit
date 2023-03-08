@@ -8,7 +8,7 @@ AbsoluteDate extended class.
 
 """
 from datetime import datetime
-from typing import Type, Union, overload
+from typing import Union, overload
 
 import portion as p
 from orekit.pyhelpers import datetime_to_absolutedate
@@ -82,7 +82,7 @@ class AbsoluteDateExt(AbsoluteDate):
         # durationFrom and tolerance are guaranteed to be in seconds
         return abs(super().durationFrom(other_date)) < tolerance
 
-    def durationFrom(self, other: Type[AbsoluteDate]) -> Quantity:
+    def durationFrom(self, other: type[AbsoluteDate]) -> Quantity:
         """This is equivalent to `self.durationFrom(otherDate)`.
         Output in seconds as a `Quantity` object."""
         return super().durationFrom(other) * u.s
