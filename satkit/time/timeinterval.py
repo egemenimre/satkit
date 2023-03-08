@@ -9,7 +9,6 @@ Time interval module.
 `TimeInterval` class stores time intervals and `TimeIntervalList` class stores
 lists of `TimeInterval` objects.
 """
-from typing import Type
 
 import portion as p
 from org.orekit.time import AbsoluteDate, TimeStamped
@@ -38,8 +37,8 @@ class TimeInterval:
 
     def __init__(
             self,
-            start_time: Type[AbsoluteDate],
-            end_time: Type[AbsoluteDate],
+            start_time: type[AbsoluteDate],
+            end_time: type[AbsoluteDate],
             start_inclusive=True,
             end_inclusive=True,
     ):
@@ -87,8 +86,8 @@ class TimeInterval:
 
     def __new__(
             cls,
-            start_time: Type[AbsoluteDate],
-            end_time: Type[AbsoluteDate],
+            start_time: type[AbsoluteDate],
+            end_time: type[AbsoluteDate],
             start_inclusive=True,
             end_inclusive=True,
     ):
@@ -99,7 +98,7 @@ class TimeInterval:
     @u.wraps(None, (None, "s", None, None), False)
     @staticmethod
     def from_duration(
-            start_time: Type[AbsoluteDate],
+            start_time: type[AbsoluteDate],
             duration: float | Quantity,
             start_inclusive=True,
             end_inclusive=True,
