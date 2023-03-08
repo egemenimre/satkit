@@ -54,7 +54,7 @@ class TimeInterval:
         self._interval = _interval
 
     @classmethod
-    def _validate(cls, start_time, end_time, start_inclusive, end_inclusive) -> bool:
+    def _validate(cls, start_time, end_time) -> bool:
         if isinstance(start_time, AbsoluteDate) and isinstance(end_time, AbsoluteDate):
             # start and end times are AbsoluteDate or a subclass
 
@@ -92,7 +92,7 @@ class TimeInterval:
             end_inclusive=True,
     ):
         # validate the inputs
-        if cls._validate(start_time, end_time, start_inclusive, end_inclusive):
+        if cls._validate(start_time, end_time):
             return super().__new__(cls)
 
     @u.wraps(None, (None, "s", None, None), False)
