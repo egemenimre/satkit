@@ -192,17 +192,22 @@ class TimeInterval:
         # Time not edges, do a regular check
         return self._interval.contains(time)
 
-    def is_equal(self, interval):
+    def is_equal(self, interval, tolerance=_EPS_TIME):
         """
         Checks whether two intervals are (almost) equal in value.
 
-        If the two start or end values are as close as `_EPS_TIME`, then they are
-        assumed to be equal in value.
+        If the two start or end values are as close as `tolerance`, then they are
+        assumed to be equal in value. The default tolerance is given in `_EPS_TIME`
+        and is on the order of nanoseconds.
 
         Parameters
         ----------
          interval : TimeInterval
             Time interval to be checked
+
+        tolerance : float or Quantity
+            the separation, in seconds, under which the two bounds of the interval will be
+            considered close to each other
 
         Returns
         -------
@@ -210,8 +215,8 @@ class TimeInterval:
             True if interval start and end are (almost) equal, False otherwise
 
         """
-        is_start_equal = interval.start.isCloseTo(self.start, _EPS_TIME)
-        is_end_equal = interval.end.isCloseTo(self.end, _EPS_TIME)
+        is_start_equal = interval.start.isCloseTo(self.start, tolerance)
+        is_end_equal = interval.end.isCloseTo(self.end, tolerance)
 
         return True if is_start_equal and is_end_equal else False
 
