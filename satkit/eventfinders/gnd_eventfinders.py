@@ -19,9 +19,13 @@ from satkit.time.timeinterval import TimeInterval, TimeIntervalList
 
 
 @u.wraps(None, (None, None, None, "rad", None), False)
-def gnd_pass_finder(search_interval: TimeInterval, propagator: Propagator, gnd_pos: GeodeticPoint,
-                    elev_mask: float | Quantity | ElevationMask,
-                    planet: OneAxisEllipsoid) -> TimeIntervalList:
+def gnd_pass_finder(
+    search_interval: TimeInterval,
+    propagator: Propagator,
+    gnd_pos: GeodeticPoint,
+    elev_mask: float | Quantity | ElevationMask,
+    planet: OneAxisEllipsoid,
+) -> TimeIntervalList:
     """
     Finds satellite (or any object with a trajectory) "passes" over a ground location.
 
@@ -96,13 +100,17 @@ def gnd_pass_finder(search_interval: TimeInterval, propagator: Propagator, gnd_p
 
         if events[-1].isIncreasing():
             # last event is the beginning of a pass, set the end of the pass to search end
-            intervals.append(TimeInterval(events[-1].getState().getDate(), search_interval.end))
+            intervals.append(
+                TimeInterval(events[-1].getState().getDate(), search_interval.end)
+            )
             # remove the item
             events.remove(events[-1])
 
         if not events[0].isIncreasing():
             # first event is end of a pass, set the beginning of the pass to search begin
-            intervals.append(TimeInterval(search_interval.start, events[0].getState().getDate()))
+            intervals.append(
+                TimeInterval(search_interval.start, events[0].getState().getDate())
+            )
             # remove the item
             events.remove(events[0])
 
@@ -113,7 +121,9 @@ def gnd_pass_finder(search_interval: TimeInterval, propagator: Propagator, gnd_p
                 start_state = event.getState()
             elif start_state:
                 stop_state = event.getState()
-                intervals.append(TimeInterval(start_state.getDate(), stop_state.getDate()))
+                intervals.append(
+                    TimeInterval(start_state.getDate(), stop_state.getDate())
+                )
                 start_state = None
 
     # return the generated time interval list

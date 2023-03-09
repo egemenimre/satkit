@@ -139,7 +139,7 @@ class AbsoluteDateExt(AbsoluteDate):
     # This uses explicit `Union` as this scenario does not like the | operator
     @u.wraps(None, (None, "s"), False)
     def __sub__(
-            self, time: Union[Quantity, float, "AbsoluteDateExt"]
+        self, time: Union[Quantity, float, "AbsoluteDateExt"]
     ) -> Union["AbsoluteDateExt", Quantity]:
         """Subtract a date or a duration from `self`.
 
