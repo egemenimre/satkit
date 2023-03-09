@@ -4,9 +4,9 @@
 #
 # Licensed under GNU GPL v3.0. See LICENSE.rst for more info.
 """
-Propagation tests.
-"""
+Tests for event and interval finders.
 
+"""
 from tests import common_test_setup_module
 
 
