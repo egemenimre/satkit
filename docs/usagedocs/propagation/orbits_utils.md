@@ -91,3 +91,26 @@ Other parameters such as eccentricity, argument of perigee or mean anomaly as we
 * Celestrak: <http://celestrak.com/NORAD/elements/>
 
 * Heavens Above: <https://heavens-above.com>
+
+# Other Orbit Utilities
+
+## Ephemeris Propagator Generator
+
+The `Ephemeris` propagator in Orekit is a propagator that takes in a series of discrete position-velocity-time combinations and stores them to generate interpolated internal outputs, just like any other propagator. On the other hand, the certain objects (notably Celestial Bodies) are only given as an object with a `PVCoordinatesProvider`. These objects can provide their own positions like a propagator, but it is not possible to have more advanced propagator functionalities (like an `EventsLogger`). To be able to convert such an `PVCoordinatesProvider`, we have to generate discrete trajectories and generate an `Ephemeris` propagator. The {py:meth}`.generate_ephemeris_prop` method does just that, generates discrete coordinates at a stepsize and an interpolation order. An example that generates the Sun coordinates at 600 second intervals within a certain propagation interval (`prop_interval`) is given below:
+
+```
+stepsize = 600.0  # seconds
+
+# shorthand for UTC
+utc = TimeScalesFactory.getUTC()
+
+# generate Sun as a PVCoordinatesProvider
+sun_coords = PVCoordinatesProvider.cast_(CelestialBodyFactory.getSun())
+
+prop_interval = TimeInterval(
+    AbsoluteDateExt("2014-01-01T23:30:00.000", utc),
+    AbsoluteDateExt("2014-01-01T23:35:00.000", utc),
+)
+
+generate_ephemeris_prop(prop_interval, sun_coords, stepsize=stepsize)
+```

@@ -6,11 +6,17 @@
 """
 Orbit helper methods.
 """
+import math
+
 import numpy as np
-from org.orekit.utils import Constants
+from org.orekit.frames import Frame, FramesFactory
+from org.orekit.propagation import SpacecraftState
+from org.orekit.propagation.analytical import Ephemeris
+from org.orekit.utils import AbsolutePVCoordinates, Constants, PVCoordinatesProvider
 from pint import Quantity
 
 from satkit import u
+from satkit.time.timeinterval import TimeInterval
 
 
 class OrbitUtils:
@@ -143,3 +149,83 @@ class OrbitUtils:
             )
         else:
             return -(3.0 * j2 * r_e**2 * n * np.cos(i)) / (2.0 * p**2)
+
+
+@u.wraps(None, (None, None, "sec", None, None), False)
+def generate_ephemeris_prop(
+    prop_interval: TimeInterval,
+    coords: PVCoordinatesProvider,
+    stepsize: float | Quantity = 10 * 60,
+    frame: Frame = FramesFactory.getGCRF(),
+    interpolation_points: int = 6,
+) -> Ephemeris:
+    """
+    Generates an `Ephemeris` propagator using a set of discrete coordinates from a
+    propagator (or a `PVCoordinatesProvider`).
+
+    Particularly aimed at generating planet ephemerides as propagators.
+
+    Parameters
+    ----------
+    prop_interval
+        Propagation interval
+    coords
+        Propagator (or `PVCoordinatesProvider`) to generate the trajectory of the object
+    stepsize
+        Stepsize of the sampling (in seconds)
+    frame
+        Frame of the discrete coordinates in the `Ephemeris` propagator
+    interpolation_points
+        Number of points to use in interpolation
+
+    Returns
+    -------
+    Ephemeris
+        Ephemeris propagator that holds the discrete coordinates
+
+    Raises
+    ------
+    ZeroDivisionError
+        stepsize set to zero
+
+    """
+
+    max_iter = 1000000
+
+    try:
+        steps = math.ceil(prop_interval.duration.m_as("sec") / stepsize) + 1
+
+        # check for too many iterations
+        if steps > max_iter:
+            raise Exception(
+                f"Error generating Ephemeris. "
+                f"Max number of iterations should not exceed {max_iter}. "
+                f"Number of steps was {steps}, with a stepsize of {stepsize} seconds."
+            )
+    except ZeroDivisionError:
+        raise ZeroDivisionError(
+            f"Error generating Ephemeris. "
+            f"Division by zero when computing number of steps."
+            f"The stepsize was {stepsize} seconds."
+        )
+
+    # Make sure we have enough steps for the interpolation
+    if steps < interpolation_points:
+        steps = interpolation_points
+
+    # this is the Java ArrayList, compatible with the Ephemeris object
+    state_list = ArrayList()  # noqa: F821
+
+    # loop through the steps
+    current_time = prop_interval.start
+    for i in range(steps):
+        state = SpacecraftState(
+            AbsolutePVCoordinates(frame, coords.getPVCoordinates(current_time, frame))
+        )
+        state_list.add(state)
+        current_time += stepsize
+
+    # Init Ephemeris propagator
+    propagator = Ephemeris(state_list, interpolation_points)
+
+    return propagator
