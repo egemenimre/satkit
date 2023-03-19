@@ -4,6 +4,7 @@
 
 Current functionality:
 
+- High level (and simplified) event and interval finding for common mission analysis problems (comms times etc.) 
 - Loading a list of TLEs from file and filtering them for various parameters
 - Initialise TLEs for common orbits (Sun-synchronous and geostationary)
 - Adding further functionalities to basic Orekit classes like `AbsoluteDate` or `TLE`
@@ -18,9 +19,7 @@ Check the [Changelog page](changelog.md) for the changelog and recently added fu
 
 1. Operations support
 
-   a) Groundstation communication times
-
-   b) Target imaging times
+   a) Target imaging times
 
 2. Satellite orbit design and analysis
 
