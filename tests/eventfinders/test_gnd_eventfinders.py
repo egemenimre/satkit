@@ -58,6 +58,9 @@ def gnd_location():
 
 
 def elev_event_inputs_outputs():
+    """
+    Elevation event/interval finder inputs and outputs.
+    """
     # shorthand for UTC
     utc = TimeScalesFactory.getUTC()
 
@@ -145,6 +148,56 @@ def elev_event_inputs_outputs():
     return input_output_tuples
 
 
+def gnd_illum_event_inputs_outputs():
+    """
+    Ground illumination event/interval finder inputs and outputs.
+    """
+    # shorthand for UTC
+    utc = TimeScalesFactory.getUTC()
+
+    input_output_tuples = []
+
+    # Nominal case
+    nominal_search_interval = TimeInterval(
+        AbsoluteDateExt("2014-01-01T23:30:00.000", utc),
+        AbsoluteDateExt("2014-01-03T23:55:00.000", utc),
+    )
+    nominal_output = [
+        TimeInterval(
+            AbsoluteDateExt("2014-01-02T03:49:23.13647326407261Z", utc),
+            AbsoluteDateExt("2014-01-02T14:18:40.24164797921502Z", utc),
+        ),
+        TimeInterval(
+            AbsoluteDateExt("2014-01-03T03:49:38.60587818622483Z", utc),
+            AbsoluteDateExt("2014-01-03T14:19:20.96836855666545Z", utc),
+        ),
+    ]
+    input_output_tuples.append((nominal_search_interval, nominal_output))
+
+    # Search interval too short, but is inside a daytime
+    short_search_interval_1 = TimeInterval(
+        AbsoluteDateExt("2014-01-01T13:30:00.000", utc),
+        AbsoluteDateExt("2014-01-01T13:40:00.000", utc),
+    )
+    short_output_1 = [
+        TimeInterval(
+            AbsoluteDateExt("2014-01-01T13:30:00.000", utc),
+            AbsoluteDateExt("2014-01-01T13:40:00.000", utc),
+        )
+    ]
+    input_output_tuples.append((short_search_interval_1, short_output_1))
+
+    # Search interval is outside daytime - no interval to be found
+    no_pass_search_interval = TimeInterval(
+        AbsoluteDateExt("2014-01-01T23:30:00.000", utc),
+        AbsoluteDateExt("2014-01-01T23:35:00.000", utc),
+    )
+    no_pass_output = []
+    input_output_tuples.append((no_pass_search_interval, no_pass_output))
+
+    return input_output_tuples
+
+
 def deep_copy_intervals(interval_list):
     return [TimeInterval.from_interval(interval) for interval in interval_list]
 
@@ -152,6 +205,31 @@ def deep_copy_intervals(interval_list):
 # we can't use pytest parametrize here, as elev_event_inputs_outputs() requires orekit to be initialised
 # parametrize is called before orekit init, causing an exception
 def test_elevation_events():
+    # elevation definition
+    elevation = 5 * u.deg
+
+    # loop through each input - output couple
+    for search_interval, expected_intervals in elev_event_inputs_outputs():
+        # find passes
+        passes = gnd_pass_finder(
+            search_interval, kep_propagator(), gnd_location(), elevation, earth()
+        )
+
+        # make sure output and expected value are of the same length
+        assert len(passes.intervals) == len(expected_intervals)
+
+        # check each interval to ensure equality
+        for interval, exp_interval in zip(passes.intervals, expected_intervals):
+            # if not interval.is_equal(exp_interval):
+            #     print(interval)
+            #     print(exp_interval)
+
+            assert interval.is_equal(exp_interval, tolerance=100 * u.ns)
+
+
+# we can't use pytest parametrize here, as elev_event_inputs_outputs() requires orekit to be initialised
+# parametrize is called before orekit init, causing an exception
+def test_gnd_illum_events():
     # elevation definition
     elevation = 5 * u.deg
 
