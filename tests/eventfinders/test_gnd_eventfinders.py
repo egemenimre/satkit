@@ -18,7 +18,11 @@ from org.orekit.time import TimeScalesFactory
 from org.orekit.utils import Constants, IERSConventions, TimeStampedPVCoordinates
 
 from satkit import u
-from satkit.eventfinders.gnd_eventfinders import gnd_pass_finder
+from satkit.eventfinders.gnd_eventfinders import (
+    StandardDawnDuskElevs,
+    gnd_illum_finder,
+    gnd_pass_finder,
+)
 from satkit.time.time import AbsoluteDateExt
 from satkit.time.timeinterval import TimeInterval
 
@@ -164,12 +168,12 @@ def gnd_illum_event_inputs_outputs():
     )
     nominal_output = [
         TimeInterval(
-            AbsoluteDateExt("2014-01-02T03:49:23.13647326407261Z", utc),
-            AbsoluteDateExt("2014-01-02T14:18:40.24164797921502Z", utc),
+            AbsoluteDateExt("2014-01-02T03:20:23.78850932774926Z", utc),
+            AbsoluteDateExt("2014-01-02T14:47:39.42716052571426Z", utc),
         ),
         TimeInterval(
-            AbsoluteDateExt("2014-01-03T03:49:38.60587818622483Z", utc),
-            AbsoluteDateExt("2014-01-03T14:19:20.96836855666545Z", utc),
+            AbsoluteDateExt("2014-01-03T03:20:40.67633771842178Z", utc),
+            AbsoluteDateExt("2014-01-03T14:48:18.72433753081995Z", utc),
         ),
     ]
     input_output_tuples.append((nominal_search_interval, nominal_output))
@@ -212,7 +216,11 @@ def test_elevation_events():
     for search_interval, expected_intervals in elev_event_inputs_outputs():
         # find passes
         passes = gnd_pass_finder(
-            search_interval, kep_propagator(), gnd_location(), elevation, earth()
+            search_interval,
+            gnd_location(),
+            elevation,
+            propagator=kep_propagator(),
+            planet=earth(),
         )
 
         # make sure output and expected value are of the same length
@@ -221,8 +229,10 @@ def test_elevation_events():
         # check each interval to ensure equality
         for interval, exp_interval in zip(passes.intervals, expected_intervals):
             # if not interval.is_equal(exp_interval):
-            #     print(interval)
-            #     print(exp_interval)
+            # print(interval)
+            # print("--------")
+            # print(exp_interval)
+            # print("*********")
 
             assert interval.is_equal(exp_interval, tolerance=100 * u.ns)
 
@@ -231,13 +241,13 @@ def test_elevation_events():
 # parametrize is called before orekit init, causing an exception
 def test_gnd_illum_events():
     # elevation definition
-    elevation = 5 * u.deg
+    elevation = StandardDawnDuskElevs.CIVIL_DAWN_DUSK_ELEVATION
 
     # loop through each input - output couple
-    for search_interval, expected_intervals in elev_event_inputs_outputs():
+    for search_interval, expected_intervals in gnd_illum_event_inputs_outputs():
         # find passes
-        passes = gnd_pass_finder(
-            search_interval, kep_propagator(), gnd_location(), elevation, earth()
+        passes = gnd_illum_finder(
+            search_interval, gnd_location(), elevation, planet=earth()
         )
 
         # make sure output and expected value are of the same length
@@ -246,7 +256,9 @@ def test_gnd_illum_events():
         # check each interval to ensure equality
         for interval, exp_interval in zip(passes.intervals, expected_intervals):
             # if not interval.is_equal(exp_interval):
-            #     print(interval)
-            #     print(exp_interval)
+            # print(interval)
+            # print("--------")
+            # print(exp_interval)
+            # print("*********")
 
             assert interval.is_equal(exp_interval, tolerance=100 * u.ns)
