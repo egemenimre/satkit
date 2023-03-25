@@ -1,10 +1,18 @@
+---
+myst:
+  substitutions:
+    portion_interval: "[`Interval`](https://github.com/AlexandreDecan/portion)"
+    elev_detector: "[`ElevationDetector`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/propagation/events/ElevationDetector)"
+    elev_mask: "[`ElevationMask`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/utils/ElevationMask)"
+---
+
 # Time Intervals and Time Interval Lists
 
 ## Introduction
 
 Time intervals are critical to define the start and end of certain events such as start and end of communications with a groundstation, entering and exiting the eclipse or start and end of a thruster firing. This is particularly useful when two intervals (or sets of intervals) can be evaluated through operations such as *union* and *intersection*. This enables us to answer questions such as "What are the time intervals where thruster firings occur during communications?” (an intersection operation between 'intervals of thruster firings' and 'communications interval lists') or “When can I see a satellite at night?" (an intersection operation between intervals of 'satellite above horizon', 'sun below horizon' and 'satellite not in eclipse').
 
-The {py:mod}`.timeinterval` module provides the basic time interval functionality with the {py:class}`.TimeInterval` class i.e., a time interval with a start and end time/date, using the {py:class}`.AbsoluteDateExt` class under the hood to represent time and {py:class}`portion.interval.Interval` class to manage and manipulate the time intervals. A {py:class}`.TimeInterval` can interact with other intervals through {py:meth}`.TimeInterval.union` and py:meth}`.TimeInterval.intersect` methods. They can change their size through {py:meth}`.TimeInterval.expand` and they can check whether they contain ({py:meth}`.TimeInterval.contains`) or intersect with ({py:meth}`.TimeInterval.is_intersecting`) another time interval.
+The {py:mod}`.timeinterval` module provides the basic time interval functionality with the {py:class}`.TimeInterval` class i.e., a time interval with a start and end time/date, using the {py:class}`.AbsoluteDateExt` class under the hood to represent time and {{portion_interval}} class to manage and manipulate the time intervals. A {py:class}`.TimeInterval` can interact with other intervals through {py:meth}`.TimeInterval.union` and {py:meth}`.TimeInterval.intersect` methods. They can change their size through {py:meth}`.TimeInterval.expand` and they can check whether they contain ({py:meth}`.TimeInterval.contains`) or intersect with ({py:meth}`.TimeInterval.is_intersecting`) another time interval.
 
 A list of such time intervals constitute {py:class}`.TimeIntervalList` class. A list also has a start and end of validity. This usually marks the start and end of an analysis. For example, a communications list that is valid for one day and containing no time intervals would mean that there are no communication opportunities for that day. The list can simply be inverted ({py:meth}`.TimeIntervalList.invert`) to get a list of 'no communication duration', which would then show a list with a single {py:class}`.TimeInterval` that spans the entire duration of validity.
 
