@@ -132,7 +132,18 @@ myst_heading_anchors = 3  # generate labels for heading anchors
 myst_enable_extensions = [
     "dollarmath",  # parse $...$ as equations
     "amsmath",  # LaTex math
+    "substitution",  # substitutions
 ]
+
+myst_substitutions = {
+    # "TimeIntervalList": "{py:class}`~satkit.time.timeinterval.TimeIntervalList`",
+    "pint_quantity": "[`Quantity`](https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity)",
+    "abs_date": "[`AbsoluteDate`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/time/AbsoluteDate)",
+    "propagator": "[`Propagator`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/propagation/Propagator)",
+    "ephemeris": "[`Ephemeris`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/propagation/analytical/Ephemeris)",
+    "pv_coords_provider": "[`PVCoordinatesProvider`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/utils/PVCoordinatesProvider)",
+}
+
 # -- Options for Sphinx-autoapi output -------------------------------------------
 
 # autoapi_type = "python"
