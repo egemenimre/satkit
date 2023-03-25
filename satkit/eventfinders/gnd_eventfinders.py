@@ -31,12 +31,12 @@ from satkit.propagation.orbits import generate_ephemeris_prop
 from satkit.time.timeinterval import TimeInterval, TimeIntervalList
 
 
-@u.wraps(None, (None, None, None, "rad", None, None), False)
+@u.wraps(None, (None, None, "rad", None, None, None), False)
 def gnd_pass_finder(
     search_interval: TimeInterval,
-    propagator: Propagator,
     gnd_pos: GeodeticPoint | TopocentricFrame,
     elev_mask: float | Quantity | ElevationMask,
+    propagator: Propagator,
     planet: OneAxisEllipsoid = None,
     refraction_model: AtmosphericRefractionModel = None,
 ) -> TimeIntervalList:
@@ -52,7 +52,7 @@ def gnd_pass_finder(
     The method accepts both a fixed elevation mask or an `ElevationMask` with a complex mask shape.
 
     The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame. For example,
-    Earth can be generated as follows:
+    Earth can be generated as follows::
 
         itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
         earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
@@ -126,10 +126,10 @@ class StandardDawnDuskElevs(Enum):
 def gnd_illum_finder(
     search_interval: TimeInterval,
     gnd_pos: GeodeticPoint | TopocentricFrame,
-    dawn_dusk_elev: float | Quantity,
+    dawn_dusk_elev: float | Quantity | StandardDawnDuskElevs,
+    sun_coords: PVCoordinatesProvider = None,
     planet: OneAxisEllipsoid = None,
     refraction_model: AtmosphericRefractionModel = None,
-    sun_coords: PVCoordinatesProvider = None,
 ) -> TimeIntervalList:
     """
     Finds satellite (or any object with a trajectory) "passes" over a ground location.
@@ -140,11 +140,14 @@ def gnd_illum_finder(
     a `TimeIntervalList` which can then be intersected with another interval list, for example
     "ground location illuminated intervals".
 
+    Sun positions are by default generated every 10 minutes and the underlying interpolator
+    (the `Ephemeris` propagator) uses 5 data points.
+
     The method accepts both a fixed elevation mask or an `ElevationMask` with a complex mask shape.
     It is also possible to use the values in the `StandardDawnDuskElevs` enumerator.
 
     The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame. For example,
-    Earth can be generated as follows:
+    Earth can be generated as follows::
 
         itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
         earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
@@ -156,7 +159,10 @@ def gnd_illum_finder(
 
     Atmospheric Refraction Model should be set to `None` for communications applications. It can be set to
     `EarthITU453AtmosphereRefraction` or `EarthStandardAtmosphereRefraction` (provided by Orekit) for visual
-    or optical applications.
+    or optical applications. The ITU 453 refraction model which can compute refraction at large negative
+    elevations should be preferred. For visual applications, typically Astronomical Dawn/Dusk definition
+    is used.
+
 
     Parameters
     ----------
@@ -186,9 +192,14 @@ def gnd_illum_finder(
     if not sun_coords:
         sun_coords = PVCoordinatesProvider.cast_(CelestialBodyFactory.getSun())
 
+    # Check elevation mask
+    if isinstance(dawn_dusk_elev, StandardDawnDuskElevs):
+        # Use the standard elevation mask but convert to radians
+        dawn_dusk_elev = dawn_dusk_elev.value.m_as("rad")
+
     # Init event detector: Ground at Night
     event_detector = GroundAtNightDetector(
-        topo_frame, sun_coords, dawn_dusk_elev, refraction_model
+        topo_frame, sun_coords, float(dawn_dusk_elev), refraction_model
     )
 
     # Generate an Ephemeris Propagator to hold the trajectory of the Sun
