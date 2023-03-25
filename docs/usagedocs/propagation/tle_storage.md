@@ -63,13 +63,13 @@ max_e = 0.001
 filtered_list_5 = tle_storage_2.filter_by_range(TleRangeFilterParams.E, max_value=max_e)
 ```
 
-One important thing to note is that, the filtering value can be given as a `Quantity` class (of the `pint` package) i.e., with a unit. While the code can accept inputs without units, then the inputs will be assumed to have a specific default unit. For example the default unit for inclination is radians (see enumerator {py:class}`TleDefaultUnits` for the full set of units). This helps with the all too common interfacing and unit specification errors.
+One important thing to note is that, the filtering value can be given as a {{pint_quantity}} class (of the `pint` package) i.e., with a unit. While the code can accept inputs without units, then the inputs will be assumed to have a specific default unit. For example the default unit for inclination is radians (see enumerator {py:class}`TleDefaultUnits` for the full set of units). This helps with the all too common interfacing and unit specification errors.
 
 The second thing to note is that the resulting filtered list is another `TleStorage` object, with its internal `tle_list` backed by the source object. In other words, the filtering does not create new TLE objects. Clearly, if the backing list is somehow changed, then all the other filtered lists may change as well.
 
 Finally, if the filter results in an empty list, then a new `TleStorage` object is still returned, with an empty internal `tle_list`.
 
-The third method to filter the TLEs is through custom functions. In `filter_by_func`, a user-defined function takes the TLE, runs some test and returns `True` or `False` accordingly. For example, while TLE does not have a direct way to filter for semimajor axis, a filter can be easily written with this method (see {py:class}`.TLEUtils` class API or its [description](orbits_utils.md)).
+The third method to filter the TLEs is through custom functions. In {py:meth}`~satkit.propagation.tle_list._TleList.filter_by_func`, a user-defined function takes the TLE, runs some test and returns `True` or `False` accordingly. For example, while TLE does not have a direct way to filter for semimajor axis, a filter can be easily written with this method (see {py:class}`.TLEUtils` class API or its [description](orbits_utils.md)).
 
 ```
 # define the filter function and filter the list
@@ -92,7 +92,7 @@ filtered_list_1 = tle_storage_1.filter_by_value(TleValueFilterParams.SAT_NR, 464
 
 A specific class {py:class}`.TleTimeSeries` exists to store the multiple TLEs from a single satellite with time ordering (epoch values). This is particularly useful to plot the orbit or to feed it to a propagator to propagate the satellite orbit through multiple TLEs. 
 
-One simple way to initialise this object is to generate a `TleStorage` object and the use the special `to_tle_timeseries` method to filter a single satellite. The code below initialises a `TleStorage` from a file and filters for the satellites with the catalogue number `28366`. It is also possible to initialise a {py:class}`.TleTimeSeries` object through a list of TLE data.
+One simple way to initialise this object is to generate a `TleStorage` object and the use the special {py:meth}`~satkit.propagation.tle_list.TleStorage.to_tle_timeseries` method to filter a single satellite. The code below initialises a `TleStorage` from a file and filters for the satellites with the catalogue number `28366`. It is also possible to initialise a {py:class}`.TleTimeSeries` object through a list of TLE data.
 
 ```
 # Initialise through filtering 
