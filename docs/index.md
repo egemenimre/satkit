@@ -7,7 +7,7 @@ Check the [source code on GitHub](https://github.com/egemenimre/satkit).
 ```{toctree} 
 ---
 maxdepth: 2
-caption: Getting to Learn satkit
+caption: Learning satkit
 ---
 getting_started
 tutorials
