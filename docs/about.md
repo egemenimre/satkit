@@ -7,7 +7,7 @@ Current functionality:
 - High level (and simplified) event and interval finding for common mission analysis problems (comms times etc.) 
 - Loading a list of TLEs from file and filtering them for various parameters
 - Initialise TLEs for common orbits (Sun-synchronous and geostationary)
-- Adding further functionalities to basic Orekit classes like `AbsoluteDate` or `TLE`
+- Adding further functionalities to basic Orekit classes like {{abs_date}} or [`TLE`](https://www.orekit.org/site-orekit-development/apidocs/org/orekit/propagation/analytical/tle/TLE)
 - Good infrastructure for time interval management
 - Harnessing the extensive [Orekit](https://www.orekit.org) functionalities (e.g., propagating orbits or finding events)
 
@@ -43,7 +43,7 @@ Check the [Changelog page](changelog.md) for the changelog and recently added fu
 
 ## License
 
-This project is Copyright (c) Egemen Imre and licensed under the terms of the GNU GPL v3+ licence.
+This project is Copyright © Egemen Imre and licensed under the terms of the GNU GPL v3+ licence.
 
 ## About the Author
 
