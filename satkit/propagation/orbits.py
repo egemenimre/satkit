@@ -9,6 +9,7 @@ Orbit helper methods.
 import math
 
 import numpy as np
+from java.util import ArrayList  # noqa: F821
 from org.orekit.frames import Frame, FramesFactory
 from org.orekit.propagation import SpacecraftState
 from org.orekit.propagation.analytical import Ephemeris
