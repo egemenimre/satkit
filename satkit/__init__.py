@@ -11,42 +11,94 @@ __version__ = "0.0.1"
 from pathlib import Path
 
 import orekit
+from orekit.pyhelpers import setup_orekit_curdir
 from pint import UnitRegistry
 
-# init unit registry
+# Init units
 u = UnitRegistry()
 
-# Init Java VM
-orekit.initVM()
+# Init Java Virtual Machine
+vm = orekit.initVM()
 
-#  File path part 1 for Orekit setup files
-extra_path = Path(
-    "..",
-    "..",
-    "..",
-)
+# #  File path part 1 for Orekit setup files
+# extra_path = Path(
+#     "..",
+#     "..",
+#     "..",
+# )
 
 
-def process_paths(alt_intermediate_dir, path):
+def init_satkit(filepath: Path, *search_dirs: Path):
     """
-    Processes the path depending on the run environment.
-    Checks the Nominal Path, if it does not exist, tries the alternate path.
+    Inits Orekit using the orekit data file provided.
 
-    Nominal path: `current working dir` + `path`
+    Searches the file first in the given path, then in the
+    current working directory. If it does not exist, tries the
+    alternate directories. Returns `None` if the file is not found
+    in any of the directories.
 
-    Alternate path: `current working dir` + `alternate intermediate dir` + `path`
+    - Nominal path: `current working dir` + `filepath`
+    - Alternate paths: `current working dir` + `alternate search dir` + `filepath`
 
     Parameters
     ----------
-    alt_intermediate_dir : Path
-        Alternate intermediate directory
-    path: Path
-        Filepath
+    filepath
+        File path
+    search_dirs
+        Alternate search directories
+
+    Returns
+    -------
+    Path
+        Path of the file, `None` if not found
+    """
+    #  Init Orekit data (add alternative path to look for the reference data)
+    orekit_data_file_path = process_paths(filepath, *search_dirs)
+    setup_orekit_curdir(str(orekit_data_file_path))
+
+    return orekit_data_file_path
+
+
+def process_paths(filepath: Path, *search_dirs: Path):
+    """
+    Inits a filepath with different alternative locations.
+
+    Searches the file first in the given path, then in the
+    current working directory. If it does not exist, tries the
+    alternate directories. Returns `None` if the file is not found
+    in any of the directories.
+
+    - Nominal path: `current working dir` + `filepath`
+    - Alternate paths: `current working dir` + `alternate search dir` + `filepath`
+
+    Parameters
+    ----------
+    filepath
+        File path
+    search_dirs
+        Alternate search directories
+
+    Returns
+    -------
+    Path
+        Path of the file, `None` if not found
     """
     working_dir = Path.cwd()
 
-    file_path = working_dir.joinpath(path)
-    if not working_dir.joinpath(file_path).exists():
-        file_path = working_dir.joinpath(alt_intermediate_dir).joinpath(path)
+    if Path(filepath).exists():
+        # check whether the file is at the current working dir
+        return filepath.resolve()
+    else:
+        # build the file path at the current working dir
+        file_path = working_dir.joinpath(filepath)
+        if file_path.exists():
+            return file_path.resolve()
+        else:
+            # search the remaining directories
+            for search_dir in search_dirs:
+                file_path = working_dir.joinpath(search_dir).joinpath(filepath)
+                if file_path.exists():
+                    return file_path.resolve()
 
-    return file_path.resolve()
+    # File is nowhere to be found, return None
+    return None
