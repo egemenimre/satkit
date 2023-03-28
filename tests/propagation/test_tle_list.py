@@ -30,7 +30,7 @@ starlink_tle_file_path_1 = Path("data", "starlink_tle.txt")
 
 def test_parse_storage_file():
     """Test parsing of the storage file with mixed TLE input."""
-    file_path = process_paths(alt_intermed_path, mixed_tle_file_path_1)
+    file_path = process_paths(mixed_tle_file_path_1, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path)
 
@@ -54,7 +54,7 @@ def test_parse_storage_file():
 
 def test_filter_value():
     """Tests filtering for a value equivalence."""
-    file_path = process_paths(alt_intermed_path, mixed_tle_file_path_1)
+    file_path = process_paths(mixed_tle_file_path_1, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path)
 
@@ -80,7 +80,7 @@ def test_filter_value():
 
 def test_filter_func():
     """Tests filtering for a value range with a function."""
-    file_path = process_paths(alt_intermed_path, mixed_tle_file_path_1)
+    file_path = process_paths(mixed_tle_file_path_1, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path)
 
@@ -112,7 +112,7 @@ def test_filter_func():
 
 def test_filter_range():
     """Tests filtering for a value range with min/max parameters."""
-    file_path = process_paths(alt_intermed_path, mixed_tle_file_path_1)
+    file_path = process_paths(mixed_tle_file_path_1, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path)
 
@@ -149,7 +149,7 @@ def test_filter_range():
 
 def test_tle_timeseries_ordered():
     """Test parsing of the TLE Timeseries with ordered time input."""
-    file_path = process_paths(alt_intermed_path, time_series_tle_file_path_2)
+    file_path = process_paths(time_series_tle_file_path_2, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path).to_tle_timeseries(37791)
 
@@ -159,7 +159,7 @@ def test_tle_timeseries_ordered():
 
 def test_tle_timeseries_unordered():
     """Test parsing of the TLE Timeseries with inverted time input."""
-    file_path = process_paths(alt_intermed_path, time_series_tle_file_path_1)
+    file_path = process_paths(time_series_tle_file_path_1, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path).to_tle_timeseries(37791)
 
@@ -169,7 +169,7 @@ def test_tle_timeseries_unordered():
 
 def test_tle_timeseries_time_filter():
     """Test parsing of the TLE Timeseries with time filter."""
-    file_path = process_paths(alt_intermed_path, time_series_tle_file_path_1)
+    file_path = process_paths(time_series_tle_file_path_1, alt_intermed_path)
 
     tle_storage = TleStorage.from_path(file_path).to_tle_timeseries(37791)
 
