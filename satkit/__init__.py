@@ -20,13 +20,6 @@ u = UnitRegistry()
 # Init Java Virtual Machine
 vm = orekit.initVM()
 
-# #  File path part 1 for Orekit setup files
-# extra_path = Path(
-#     "..",
-#     "..",
-#     "..",
-# )
-
 
 def init_satkit(filepath: Path, *search_dirs: Path):
     """
