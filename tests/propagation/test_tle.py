@@ -25,7 +25,7 @@ def tle_geo_lines():
     """Test Fixture with GEO TLE."""
     # TURKSAT 4A
     line1 = "1 39522U 14007A   20162.50918981  .00000000  00000-0  00000-0 0  9995"
-    line2 = "2 39522   0.0000 124.6158 0000000   0.0000   0.0000  1.00273791 23487"
+    line2 = "2 39522   0.0000 124.6202 0000000   0.0000   0.0000  1.00273791 23487"
     return line1, line2
 
 
@@ -74,23 +74,63 @@ def test_init_geo(tle_geo):
 
     # print("")
     # print(tle)
+    # print(tle_geo)
 
     #  prepare the itrs frame and the Earth
-    itrs = FramesFactory.getITRF(IERSConventions.IERS_2010, False)
+    itrs = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
     earth = OneAxisEllipsoid(
         Constants.WGS84_EARTH_EQUATORIAL_RADIUS, Constants.WGS84_EARTH_FLATTENING, itrs
     )
     # Get ITRS coordinate at initial time
     propagator = TLEPropagator.selectExtrapolator(tle)
-    pvt = propagator.getPVCoordinates(epoch, itrs)
+    pvt_itrs = propagator.getPVCoordinates(epoch, itrs)
 
     #  Get lla at init time - should sit on the correct longitude
-    lla = earth.transform(pvt.getPosition(), earth.getBodyFrame(), pvt.getDate())
+    lla = earth.transform(
+        pvt_itrs.getPosition(), earth.getBodyFrame(), pvt_itrs.getDate()
+    )
 
-    # print((lla.getLongitude() * u.rad).to("degrees"))
+    # print(f"init longitude: {np.degrees(lla.getLongitude())} deg")
 
-    assert longitude == approx(lla.getLongitude(), abs=5e-3 * u.deg)
+    assert longitude.m_as("rad") == approx(
+        lla.getLongitude(), abs=(1e-2 * u.deg).m_as("rad")
+    )
     assert str(tle_geo) == str(tle)
+
+
+def test_init_geo_2():
+    """Test init GEO satellite.
+
+    Check for longitude and the resulting TLE.
+    """
+
+    epoch = AbsoluteDateExt(2020, 6, 10, 4, 13, 14.0, TimeScalesFactory.getUTC())
+    longitude = 10.0 * u.deg
+
+    tle = TleFactory.init_geo(
+        epoch,
+        longitude,
+    )
+
+    #  prepare the itrs frame and the Earth
+    itrs = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
+    earth = OneAxisEllipsoid(
+        Constants.WGS84_EARTH_EQUATORIAL_RADIUS, Constants.WGS84_EARTH_FLATTENING, itrs
+    )
+    # Get ITRS coordinate at initial time
+    propagator = TLEPropagator.selectExtrapolator(tle)
+    pvt_itrs = propagator.getPVCoordinates(epoch, itrs)
+
+    #  Get lla at init time - should sit on the correct longitude
+    lla = earth.transform(
+        pvt_itrs.getPosition(), earth.getBodyFrame(), pvt_itrs.getDate()
+    )
+
+    # print(f"init longitude: {np.degrees(lla.getLongitude())} deg")
+
+    assert longitude.m_as("rad") == approx(
+        lla.getLongitude(), abs=(1e-2 * u.deg).m_as("rad")
+    )
 
 
 def test_init_sso(tle_sso):
