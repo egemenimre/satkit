@@ -9,10 +9,9 @@ TLE helper functions and factory.
 from enum import Enum
 
 import numpy as np
-from org.orekit.frames import FramesFactory
 from org.orekit.propagation.analytical.tle import TLE
 from org.orekit.time import AbsoluteDate, TimeScalesFactory
-from org.orekit.utils import Constants
+from org.orekit.utils import Constants, IERSConventions
 from pint import Quantity
 
 from satkit import u
@@ -115,15 +114,15 @@ class TleFactory:
         mean_motion = 2 * np.pi / (1.0 * u.sidereal_day).m_as("sec")
 
         # sidereal time hour angles in radians
-        sidereal_time = (
-            FramesFactory.getTOD(True)
-            .getTransformTo(FramesFactory.getGTOD(True), epoch)
-            .getRotation()
-            .getAngle()
-        )
+        ut1 = TimeScalesFactory.getUT1(IERSConventions.IERS_2010, True)
+        gmst = IERSConventions.IERS_2010.getGMSTFunction(ut1).value(epoch)
+
+        sidereal_time = gmst % (2 * np.pi)
 
         # RAAN in rad
         raan = longitude + sidereal_time
+
+        # print(f"sidereal time: {np.degrees(sidereal_time)} deg")
 
         bstar = 0.0  # no drag
         n_dot = 0.0  # mean motion assumed constant
@@ -315,12 +314,10 @@ class TleFactory:
         # Start RAAN procedure
         # ---------------------------
         # sidereal time hour angles in radians
-        sidereal_time = (
-            FramesFactory.getTOD(True)
-            .getTransformTo(FramesFactory.getGTOD(True), epoch)
-            .getRotation()
-            .getAngle()
-        )
+        ut1 = TimeScalesFactory.getUT1(IERSConventions.IERS_2010, True)
+        gmst = IERSConventions.IERS_2010.getGMSTFunction(ut1).value(epoch)
+
+        sidereal_time = gmst % (2 * np.pi)
 
         frac_day = (
             epoch.getComponents(TimeScalesFactory.getUTC())
