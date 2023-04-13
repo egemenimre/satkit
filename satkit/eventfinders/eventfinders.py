@@ -13,6 +13,7 @@ from org.orekit.frames import FramesFactory, TopocentricFrame
 from org.orekit.models import AtmosphericRefractionModel
 from org.orekit.propagation import Propagator
 from org.orekit.propagation.events import (
+    EclipseDetector,
     ElevationDetector,
     EventsLogger,
     GroundAtNightDetector,
@@ -43,27 +44,30 @@ def gnd_pass_finder(
     """
     Finds satellite (or any object with a trajectory) "passes" over a ground location.
 
-    This method is not limited to a ground location on Earth (as defined by the `planet` parameter).
-    It uses the Orekit `ElevationDetector` to find the "elevation equal to elevation mask" events.
-    However, the cases with "no events in the search interval" are handled correctly. The output is
-    a `TimeIntervalList` which can then be intersected with another interval list, for example
-    "ground location illuminated intervals".
+    This method is not limited to a ground location on Earth (as defined by the
+    `planet` parameter). It uses the Orekit `ElevationDetector` to find the
+    "elevation equal to elevation mask" events. However, the cases with
+    "no events in the search interval" are handled correctly. The output is
+    a `TimeIntervalList` which can then be intersected with another interval list,
+    for example "ground location illuminated intervals".
 
-    The method accepts both a fixed elevation mask or an `ElevationMask` with a complex mask shape.
+    The method accepts both a fixed elevation mask or an `ElevationMask`
+    with a complex mask shape.
 
-    The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame. For example,
-    Earth can be generated as follows::
+    The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame.
+    For example, Earth can be generated as follows::
 
         itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
         earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
                                  Constants.WGS84_EARTH_FLATTENING,
                                  itrf)
 
-    If the `gnd_pos` parameter is defined as a `TopocentricFrame`, then the optional planet parameter
-    is ignored. Otherwise, it is set to Earth as given above.
+    If the `gnd_pos` parameter is defined as a `TopocentricFrame`, then the
+    optional planet parameter is ignored. Otherwise, it is set to Earth as given above.
 
-    Atmospheric Refraction Model should be set to `None` for communications applications. It can be set to
-    `EarthITU453AtmosphereRefraction` or `EarthStandardAtmosphereRefraction` (provided by Orekit) for visual
+    Atmospheric Refraction Model should be set to `None` for communications
+    applications. It can be set to `EarthITU453AtmosphereRefraction` or
+    `EarthStandardAtmosphereRefraction` (provided by Orekit) for visual
     or optical applications.
 
     Parameters
@@ -132,36 +136,39 @@ def gnd_illum_finder(
     refraction_model: AtmosphericRefractionModel = None,
 ) -> TimeIntervalList:
     """
-    Finds satellite (or any object with a trajectory) "passes" over a ground location.
+    Finds illumination periods of a ground location.
 
-    This method is not limited to a ground location on Earth (as defined by the `planet` parameter).
-    It uses the Orekit `ElevationDetector` to find the "elevation equal to elevation mask" events.
-    However, the cases with "no events in the search interval" are handled correctly. The output is
-    a `TimeIntervalList` which can then be intersected with another interval list, for example
-    "ground location illuminated intervals".
+    This method is not limited to a ground location on Earth (as defined by the
+    `planet` parameter). It uses the Orekit `GroundAtNightDetector` to find the
+    "Sun elevation equal to elevation limit" events.
+    However, the cases with "no events in the search interval" are handled correctly.
+    The output is a `TimeIntervalList` which can then be intersected
+    with another interval list, for example "satellite pass over ground location
+    intervals".
 
-    Sun positions are by default generated every 10 minutes and the underlying interpolator
-    (the `Ephemeris` propagator) uses 5 data points.
+    Sun positions are by default generated every 10 minutes and the underlying
+    interpolator (the `Ephemeris` propagator) uses 5 data points.
 
-    The method accepts both a fixed elevation mask or an `ElevationMask` with a complex mask shape.
-    It is also possible to use the values in the `StandardDawnDuskElevs` enumerator.
+    The method accepts both a fixed elevation mask or the values in the
+    `StandardDawnDuskElevs` enumerator.
 
-    The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame. For example,
-    Earth can be generated as follows::
+    The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame.
+    For example, Earth can be generated as follows::
 
         itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
         earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
                                  Constants.WGS84_EARTH_FLATTENING,
                                  itrf)
 
-    If the `gnd_pos` parameter is defined as a `TopocentricFrame`, then the optional planet parameter
-    is ignored. Otherwise, it is set to Earth as given above.
+    If the `gnd_pos` parameter is defined as a `TopocentricFrame`, then the optional
+    planet parameter is ignored. Otherwise, it is set to Earth as given above.
 
-    Atmospheric Refraction Model should be set to `None` for communications applications. It can be set to
-    `EarthITU453AtmosphereRefraction` or `EarthStandardAtmosphereRefraction` (provided by Orekit) for visual
-    or optical applications. The ITU 453 refraction model which can compute refraction at large negative
-    elevations should be preferred. For visual applications, typically Astronomical Dawn/Dusk definition
-    is used.
+    Atmospheric Refraction Model should be set to `None` to ignore the atmospheric
+    refraction. It can be set to `EarthITU453AtmosphereRefraction` or
+    `EarthStandardAtmosphereRefraction` (provided by Orekit), though the ITU 453
+    refraction model which can compute refraction at large negative
+    elevations should be preferred. For visual applications, typically
+    Astronomical Dawn/Dusk definition is used.
 
 
     Parameters
@@ -172,17 +179,17 @@ def gnd_illum_finder(
         Ground position in geodetic coordinates (or the topocentric frame associated with it)
     dawn_dusk_elev
         Elevation mask a fixed value
+    sun_coords
+        Propagator (or `PVCoordinatesProvider`) to generate the trajectory of the Sun
     planet
         The planet where the ground position is located. Defaults to WGS84 Earth.
     refraction_model
         Atmospheric Refraction Model, defaults to `None`
-    sun_coords
-        Propagator (or `PVCoordinatesProvider`) to generate the trajectory of the Sun
 
     Returns
     -------
     TimeIntervalList
-        List of time intervals corresponding to the "elevation above the mask"
+        List of time intervals corresponding to the "sun elevation above the elev mask"
     """
 
     # Init topocentric frame
@@ -215,6 +222,92 @@ def gnd_illum_finder(
 
     # return the generated time interval list (g negative marks an interval)
     return _find_g_neg_intervals(search_interval, propagator, event_detector)
+
+
+@u.wraps(None, (None, None, None, "rad", None, None), False)
+def sat_illum_finder(
+    search_interval: TimeInterval,
+    propagator: Propagator,
+    use_total_eclipse: bool = True,
+    angular_margin: float | Quantity = 0.0,
+    sun_coords: PVCoordinatesProvider = None,
+    planet: OneAxisEllipsoid = None,
+) -> TimeIntervalList:
+    """
+    Finds satellite (or any object with a trajectory) illumination (or outside
+    occultation) times.
+
+    This method computes the durations outside umbra or penumbra for a point object
+    (e.g., a satellite) on a trajectory. It uses the Orekit `EclipseDetector` to find
+    the umbra/penumbra entry and exit events. However, the cases with
+    "no events in the search interval" are handled correctly.
+    The output is a `TimeIntervalList` which can then be intersected
+    with another interval list, for example "satellite pass over ground location
+    intervals".
+
+    The `use_total_eclipse` flag is used to find umbra or penumbra entry/exit events.
+    The `angular_margin` parameter added to the eclipse detection. A positive margin
+    implies eclipses are "larger" hence entry occurs earlier and exit occurs
+    later than a detector with 0 margin.
+
+    The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame.
+    For example, Earth can be generated as follows::
+
+        itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
+        earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                 Constants.WGS84_EARTH_FLATTENING,
+                                 itrf)
+
+    The same method can be used to find eclipses due to Moon, by simply replacing the
+    `planet` parameter with the Moon definition.
+
+    Parameters
+    ----------
+    search_interval
+        Search interval for the "events"
+    propagator
+        Propagator to generate the trajectory of the satellite (or any other object)
+    use_total_eclipse
+        Total eclipse detection flag (true for umbra events detection, false for penumbra events detection)
+    angular_margin
+        Angular margin added to the eclipse detection
+    sun_coords
+        Propagator (or `PVCoordinatesProvider`) to generate the trajectory of the Sun
+    planet
+        The planet where the ground position is located. Defaults to WGS84 Earth.
+
+
+    Returns
+    -------
+    TimeIntervalList
+        List of time intervals corresponding to the "elevation above the mask"
+    """
+
+    # generate Sun as a PVCoordinatesProvider
+    if not sun_coords:
+        sun_coords = PVCoordinatesProvider.cast_(CelestialBodyFactory.getSun())
+
+    # Init event detector: Eclipse
+    sun_radius = Constants.SUN_RADIUS  # meters
+    event_detector = EclipseDetector(sun_coords, sun_radius, planet)
+
+    # TODO delete the try except block when Orekit 12 is available
+    try:
+        event_detector = event_detector.withMargin(angular_margin)
+    except AttributeError:
+        pass
+
+    # check for umbra / penumbra
+    if use_total_eclipse:
+        event_detector = event_detector.withUmbra()
+    else:
+        event_detector = event_detector.withPenumbra()
+
+    # do not stop at "start" or "end" events (returns AbstractDetector)
+    event_detector = event_detector.withHandler(ContinueOnEvent())
+
+    # return the generated time interval list (g positive marks an interval)
+    return _find_g_pos_intervals(search_interval, propagator, event_detector)
 
 
 def _find_g_pos_intervals(
