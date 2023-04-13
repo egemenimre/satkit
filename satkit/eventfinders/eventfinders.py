@@ -251,7 +251,8 @@ def sat_illum_finder(
     later than a detector with 0 margin.
 
     The planet parameter can be any `OneAxisEllipsoid` with its own fixed frame.
-    For example, Earth can be generated as follows::
+    For example, Earth can be generated as follows (which is the default, if `None`
+    is given)::
 
         itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
         earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
@@ -274,7 +275,7 @@ def sat_illum_finder(
     sun_coords
         Propagator (or `PVCoordinatesProvider`) to generate the trajectory of the Sun
     planet
-        The planet where the ground position is located. Defaults to WGS84 Earth.
+        The planet that occults the satellite. Defaults to WGS84 Earth.
 
 
     Returns
@@ -282,6 +283,15 @@ def sat_illum_finder(
     TimeIntervalList
         List of time intervals corresponding to the "elevation above the mask"
     """
+
+    if not planet:
+        # planet is not defined, use the default WGS84 Earth
+        itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
+        planet = OneAxisEllipsoid(
+            Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+            Constants.WGS84_EARTH_FLATTENING,
+            itrf,
+        )
 
     # generate Sun as a PVCoordinatesProvider
     if not sun_coords:
