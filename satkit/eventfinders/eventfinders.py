@@ -258,7 +258,7 @@ def sat_illum_finder(
                                  Constants.WGS84_EARTH_FLATTENING,
                                  itrf)
 
-    The same method can be used to find eclipses due to Moon, by simply replacing the
+    The same method can be used to find eclipses due to the Moon, by simply replacing the
     `planet` parameter with the Moon definition.
 
     Parameters
