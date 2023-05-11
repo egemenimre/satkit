@@ -22,7 +22,7 @@ Furthermore, once these intervals are found (as {py:class}`.TimeInterval` object
 (eventfinders/gnd_to_sat_los)=
 ### Ground-to-Satellite Communication (or Line-of-Sight) Intervals
 
-The "line-of-sight intervals" from a ground location to a satellite (or any object on a predefined trajectory) is a very common problem, from satellite sighting to groundstation communication times. The {py:meth}`~satkit.eventfinders.eventfinders.gnd_pass_finder` method provided by `satkit` makes it easy to compute these "ground passes". This method uses the Orekit {{elev_detector}} event detector.
+The "line-of-sight intervals" from a ground location to a satellite (or any object on a predefined trajectory) is a very common problem, from satellite sighting to groundstation communication times. The {py:meth}`~satkit.events.eventfinders.gnd_pass_finder` method provided by `satkit` makes it easy to compute these "ground passes". This method uses the Orekit {{elev_detector}} event detector.
 
 It receives the following inputs: 
 - a ground location (a Geodetic Point or a Topocentric Frame), as well as a planet where this Geodetic Point is located (not needed if a Topocentric Frame is provided)
@@ -47,7 +47,7 @@ earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
 
 ### Ground Illumination Intervals
 
-Ground illumination intervals are similar to the Satellite-to-Ground Line-of-Sight intervals, except the "satellite", or the flying object that has a trajectory is actually the Sun. The {py:meth}`~satkit.eventfinders.eventfinders.gnd_illum_finder` method provides an easy interface to find the ground illumination times. This method uses the Orekit {{gnd_at_night_detector}} event detector.
+Ground illumination intervals are similar to the Satellite-to-Ground Line-of-Sight intervals, except the "satellite", or the flying object that has a trajectory is actually the Sun. The {py:meth}`~satkit.events.eventfinders.gnd_illum_finder` method provides an easy interface to find the ground illumination times. This method uses the Orekit {{gnd_at_night_detector}} event detector.
 
 The method receives the following inputs: 
 - a ground location (a Geodetic Point or a Topocentric Frame), as well as a planet where this Geodetic Point is located (not needed if a Topocentric Frame is provided, see above for the [default Earth](#eventfinders/default_earth) definition)
@@ -60,7 +60,7 @@ The method receives the following inputs:
 intervals = gnd_illum_finder(search_interval, gnd_location, dawn_dusk_elev, sun_coords=None, planet=earth, refraction_model=refraction_model)
 ```
 
-As can be seen, the inputs are very similar to the {py:meth}`~satkit.eventfinders.eventfinders.gnd_pass_finder` method. One subtle difference is that, Orekit does not provide a {{propagator}} interface for the Sun, therefore an Orekit {{ephemeris}} propagator (using 5 data points) is initialised under the hood, sampling Sun positions every 10 minutes.
+As can be seen, the inputs are very similar to the {py:meth}`~satkit.events.eventfinders.gnd_pass_finder` method. One subtle difference is that, Orekit does not provide a {{propagator}} interface for the Sun, therefore an Orekit {{ephemeris}} propagator (using 5 data points) is initialised under the hood, sampling Sun positions every 10 minutes.
 
 The dawn/dask elevation angle can be set to zero for horizon, but usually standard definitions like Civil or Nautical Dawn/Dusk Elevation Angles (-6 and -12 degrees, respectively) are used. They are given in the {py:class}`.StandardDawnDuskElevs` enumerator for convenience. For applications with visual observations, typically Astronomical Dawn/Dask (-18 degrees) is used, to ensure that the sky is dark enough. For these cases, ITU 453 refraction model should be preferred, as the other refraction models may not deal with negative elevations well.
 
@@ -68,7 +68,7 @@ The dawn/dask elevation angle can be set to zero for horizon, but usually standa
 
 ### Satellite Illumination Intervals
 
-Satellite illumination intervals are defined as the durations where the satellite (or any point object on a trajectory) is outside umbra or penumbra of an occulting object (e.g., the Earth or the Moon). The {py:meth}`~satkit.eventfinders.eventfinders.sat_illum_finder` method provides an easy interface to find the satellite illumination times. This method uses the Orekit {{eclipse_detector}} event detector.
+Satellite illumination intervals are defined as the durations where the satellite (or any point object on a trajectory) is outside umbra or penumbra of an occulting object (e.g., the Earth or the Moon). The {py:meth}`~satkit.events.eventfinders.sat_illum_finder` method provides an easy interface to find the satellite illumination times. This method uses the Orekit {{eclipse_detector}} event detector.
 
 The method receives the following inputs:
 - a search interval

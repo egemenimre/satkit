@@ -30,6 +30,7 @@ from pint import Quantity
 from satkit import u
 from satkit.propagation.orbits import generate_ephemeris_prop
 from satkit.time.timeinterval import TimeInterval, TimeIntervalList
+from satkit.utils.utilities import init_topo_frame
 
 
 @u.wraps(None, (None, None, "rad", None, None, None), False)
@@ -93,7 +94,7 @@ def gnd_pass_finder(
     """
 
     # init topocentric frame
-    topo_frame = _init_topo_frame(gnd_pos, planet)
+    topo_frame = init_topo_frame(gnd_pos, planet)
 
     # Init event detector: Elevation Mask
     if isinstance(elev_mask, ElevationMask):
@@ -193,7 +194,7 @@ def gnd_illum_finder(
     """
 
     # Init topocentric frame
-    topo_frame = _init_topo_frame(gnd_pos, planet)
+    topo_frame = init_topo_frame(gnd_pos, planet)
 
     # generate Sun as a PVCoordinatesProvider
     if not sun_coords:
@@ -425,44 +426,3 @@ def _find_g_neg_intervals(
     return _find_g_pos_intervals(search_interval, propagator, event_detector).invert()
 
 
-def _init_topo_frame(
-    gnd_pos: GeodeticPoint | TopocentricFrame,
-    planet: OneAxisEllipsoid = None,
-) -> TopocentricFrame:
-    """
-    Initialises the Topocentric Frame.
-
-    Parameters
-    ----------
-    gnd_pos
-        Ground position in geodetic coordinates (or the topocentric frame associated with it)
-    planet
-        The planet where the ground position is located. Defaults to WGS84 Earth.
-
-    Returns
-    -------
-    TopocentricFrame
-        Topocentric frame belonging to the Ground Position
-
-    """
-    # init topocentric frame
-    if isinstance(gnd_pos, GeodeticPoint):
-        # ground position given as GeodeticPoint
-        if planet:
-            # planet is defined, use it
-            topo_frame = TopocentricFrame(planet, gnd_pos, "ground pos")
-        else:
-            # planet is not defined, use the default WGS84 Earth
-            itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
-            earth = OneAxisEllipsoid(
-                Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
-                Constants.WGS84_EARTH_FLATTENING,
-                itrf,
-            )
-            topo_frame = TopocentricFrame(earth, gnd_pos, "ground pos")
-
-    else:
-        # ground position given directly as TopocentricFrame, just copy it
-        topo_frame = gnd_pos
-
-    return topo_frame
