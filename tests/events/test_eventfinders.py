@@ -18,7 +18,7 @@ from org.orekit.time import TimeScalesFactory
 from org.orekit.utils import Constants, IERSConventions, TimeStampedPVCoordinates
 
 from satkit import u
-from satkit.eventfinders.eventfinders import (
+from satkit.events.eventfinders import (
     StandardDawnDuskElevs,
     gnd_illum_finder,
     gnd_pass_finder,
