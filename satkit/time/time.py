@@ -87,7 +87,7 @@ class AbsoluteDateExt(AbsoluteDate):
         Output in seconds as a `Quantity` object."""
         return super().durationFrom(other) * u.s
 
-    def getDate(self) -> 'AbsoluteDateExt':
+    def getDate(self) -> "AbsoluteDateExt":
         """
         Gets the date.
         """
