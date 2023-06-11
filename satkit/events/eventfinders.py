@@ -90,8 +90,8 @@ def gnd_pass_finder(
 
     Returns
     -------
-    TimeIntervalList
-        List of time intervals corresponding to the "elevation above the mask"
+    tuple[TimeIntervalList, list[AbsoluteDateExt]]
+        List of time intervals corresponding to the "elevation above the mask" and max elevation times as a tuple
 
     """
 
