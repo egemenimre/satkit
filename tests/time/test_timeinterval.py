@@ -347,7 +347,6 @@ def test_intersect(init_times, durations, init_rels):
     assert interval.intersect(init_rels["after"]) is None
 
 
-# TODO aşağıdakini hallet
 def test_union(init_times, durations, init_rels):
     """Test `union` method."""
 
