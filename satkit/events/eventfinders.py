@@ -183,7 +183,7 @@ class StandardDawnDuskElevs(Enum):
     ASTRONOMICAL_DAWN_DUSK_ELEVATION = -18.0 * u.deg
 
 
-@u.wraps(None, (None, None, "rad", None, None, None), False)
+@u.wraps(None, (None, None, "rad", None, None, None, "sec"), False)
 def gnd_illum_finder(
     search_interval: TimeInterval,
     gnd_pos: GeodeticPoint | TopocentricFrame,
@@ -191,6 +191,7 @@ def gnd_illum_finder(
     sun_coords: PVCoordinatesProvider = None,
     planet: OneAxisEllipsoid = None,
     refraction_model: AtmosphericRefractionModel = None,
+    sun_stepsize: float | Quantity = 10 * 60 * u.sec,
 ) -> TimeIntervalList:
     """
     Finds illumination periods of a ground location.
@@ -242,6 +243,8 @@ def gnd_illum_finder(
         The planet where the ground position is located. Defaults to WGS84 Earth.
     refraction_model
         Atmospheric Refraction Model, defaults to `None`
+    sun_stepsize
+        Stepsize for the sun trajectory generation / interpolation
 
     Returns
     -------
@@ -267,12 +270,11 @@ def gnd_illum_finder(
     )
 
     # Generate an Ephemeris Propagator to hold the trajectory of the Sun
-    stepsize = 10 * 60 * u.sec
     interpolation_points = 5
     propagator = generate_ephemeris_prop(
         search_interval,
         sun_coords,
-        stepsize=stepsize,
+        stepsize=sun_stepsize,
         frame=FramesFactory.getGCRF(),
         interpolation_points=interpolation_points,
     )
