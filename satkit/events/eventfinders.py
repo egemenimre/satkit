@@ -15,6 +15,7 @@ from org.orekit.propagation import Propagator
 from org.orekit.propagation.events import (
     EclipseDetector,
     ElevationDetector,
+    ElevationExtremumDetector,
     EventsLogger,
     GroundAtNightDetector,
 )
@@ -319,6 +320,60 @@ def sat_illum_finder(
 
     # return the generated time interval list (g positive marks an interval)
     return _find_g_pos_intervals(search_interval, propagator, event_detector)
+
+
+def _find_g_zero_events(
+    search_interval: TimeInterval,
+    propagator: Propagator,
+    event_detector,
+    get_increasing_events=True,
+) -> list[AbsoluteDateExt]:
+    """
+    Finds the times on which the `g` function is zero, corresponding to max or min events.
+
+    Parameters
+    ----------
+    search_interval
+        Search interval for the "events"
+    propagator
+        Propagator to generate the trajectory of the satellite (or any other object)
+    event_detector
+        Event detector
+    get_increasing_events
+        Filters the increasing events if True, decreasing events otherwise.
+        If `None` is specified, all events are returned.
+
+    Returns
+    -------
+    list[AbsoluteDateExt]
+        Dates of the extrema events
+
+    """
+    # add the event detector to the propagator
+    logger = EventsLogger()
+    propagator.clearEventsDetectors()
+    propagator.addEventDetector(logger.monitorDetector(event_detector))
+
+    # Propagate from the initial date to the final date, logging increasing and decreasing events
+    propagator.propagate(search_interval.start, search_interval.end)
+
+    # convert events to list
+    if get_increasing_events:
+        # filter the increasing/decreasing events
+        events = [
+            AbsoluteDateExt(event.getState().getDate())
+            for event in logger.getLoggedEvents()
+            if event.isIncreasing() == get_increasing_events
+        ]
+    else:
+        # return all events
+        events = [
+            AbsoluteDateExt(event.getState().getDate())
+            for event in logger.getLoggedEvents()
+        ]
+
+    # return the generated extremum event list
+    return events
 
 
 def _find_g_pos_intervals(
