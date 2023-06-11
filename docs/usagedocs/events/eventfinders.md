@@ -26,13 +26,15 @@ The "line-of-sight intervals" from a ground location to a satellite (or any obje
 
 It receives the following inputs: 
 - a ground location (a Geodetic Point or a Topocentric Frame), as well as a planet where this Geodetic Point is located (not needed if a Topocentric Frame is provided)
-- a search interval
+  - a search interval
 - a propagator for the flying object that spans the search interval
 - an elevation mask (a fixed angle value or an Orekit {{elev_mask}} object)
 - a refraction model
 
+It yields the output of intervals and maximum elevation times for these intervals.
+
 ```
-intervals = gnd_pass_finder(search_interval, gnd_location, elevation, propagator, planet=earth, refraction_model=refraction_model)
+intervals, max_elev_times = gnd_pass_finder(search_interval, gnd_location, elevation, propagator, planet=earth, refraction_model=refraction_model)
 ```
 
 The defaults are for planet Earth (see below for the definition) and no atmospheric refraction, ideal for communications and basic optical applications. It should be noted that, while other effects like light time delay (or signal propagation delay) are not taken into account, this level of precision is not required to find the relevant intervals.   
@@ -44,6 +46,9 @@ earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
                          Constants.WGS84_EARTH_FLATTENING,
                          itrf)
 ```
+
+Many applications however require many more parameters out of this analysis. To compute the intervals is not enough, the maximum elevation during the pass as well as a tabulated list of azimuth and elevations are required for both satellite communications and satellite optical tracking applications. In this case, rather than this simplistic function we should use an object-oriented interface. The {py:class}`~satkit.events.gnd_access.GroundPassList` object is generated with similar inputs, and it does call the {py:meth}`~satkit.events.eventfinders.gnd_pass_finder` as above. But it also computes azimuth-elevation-range and other parameters, and bundles them into individual {py:class}`~satkit.events.gnd_access.GroundPass` objects. The {py:class}`~satkit.events.gnd_access.GroundPassList` object stores the pass intervals for convenience (as it is a {py:class}`.TimeInterval` object with the associated functionality) as well as the {py:class}`~satkit.events.gnd_access.GroundPass` objects that store the pass interval, maximum elevation time and the corresponding azimuth-elevation and range values, as well as the azimuth-elevation-range list given as a list of {py:class}`~satkit.utils.utilities.AzElRng` objects.
+
 
 ### Ground Illumination Intervals
 
