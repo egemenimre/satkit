@@ -25,11 +25,17 @@ doc_index
 ```{toctree} 
 ---
 maxdepth: 2
+caption: Using satkit
+---
+how_to_guides
+```
+
+```{toctree} 
+---
+maxdepth: 2
 caption: References
 ---
 changelog
 references
 api_index
 ```
-
-
