@@ -30,8 +30,9 @@ from pint import Quantity
 
 from satkit import u
 from satkit.propagation.orbits import generate_ephemeris_prop
+from satkit.time.time import AbsoluteDateExt
 from satkit.time.timeinterval import TimeInterval, TimeIntervalList
-from satkit.utils.utilities import init_topo_frame
+from satkit.utils.utilities import compute_gnd_az_el, init_topo_frame
 
 
 @u.wraps(None, (None, None, "rad", None, None, None), False)
@@ -42,7 +43,7 @@ def gnd_pass_finder(
     propagator: Propagator,
     planet: OneAxisEllipsoid = None,
     refraction_model: AtmosphericRefractionModel = None,
-) -> TimeIntervalList:
+) -> tuple[TimeIntervalList, list[AbsoluteDateExt]]:
     """
     Finds satellite (or any object with a trajectory) "passes" over a ground location.
 
@@ -111,8 +112,62 @@ def gnd_pass_finder(
     # do not stop at "rise" or "set" events (returns AbstractDetector)
     event_detector = event_detector.withHandler(ContinueOnEvent())
 
-    # return the generated time interval list (g positive marks an interval)
-    return _find_g_pos_intervals(search_interval, propagator, event_detector)
+    # find the generated time interval list (g positive marks an interval)
+    interval_list = _find_g_pos_intervals(search_interval, propagator, event_detector)
+
+    # *** find max elevation events ***
+
+    # init event detector
+    event_detector = ElevationExtremumDetector(topo_frame)
+
+    # do not stop at any event (returns AbstractDetector)
+    event_detector = event_detector.withHandler(ContinueOnEvent())
+
+    # find all the max elev events (not limited to passes)
+    events = _find_g_zero_events(
+        search_interval, propagator, event_detector, get_increasing_events=False
+    )
+
+    # filter max elevation times corresponding to the passes
+    max_elev_times = []
+    for interval in interval_list.intervals:
+        # loop the intervals
+
+        event_not_found = True
+        for event in events:
+            if interval.is_in_interval(event):
+                # max elev event found in the interval
+                max_elev_times.append(event)
+                event_not_found = False
+
+        if event_not_found:
+            # there are no extrema events in the interval, this is a partial interval.
+            # Either the beginning or the end of the interval is the max elevation.
+            frame = propagator.getFrame()
+            aer_begin = compute_gnd_az_el(
+                interval.start,
+                gnd_pos,
+                propagator.getPVCoordinates(interval.start, frame),
+                frame,
+                planet,
+                refraction_model,
+            )
+
+            aer_end = compute_gnd_az_el(
+                interval.end,
+                gnd_pos,
+                propagator.getPVCoordinates(interval.start, frame),
+                frame,
+                planet,
+                refraction_model,
+            )
+
+            if aer_begin.el > aer_end.el:
+                max_elev_times.append(interval.start)
+            else:
+                max_elev_times.append(interval.end)
+
+    return interval_list, max_elev_times
 
 
 class StandardDawnDuskElevs(Enum):
