@@ -401,6 +401,7 @@ def _find_g_pos_intervals(
     """
     # add the event detector to the propagator
     logger = EventsLogger()
+    propagator.clearEventsDetectors()
     propagator.addEventDetector(logger.monitorDetector(event_detector))
 
     # Propagate from the initial date to the final date, logging increasing and decreasing events
@@ -479,5 +480,3 @@ def _find_g_neg_intervals(
 
     """
     return _find_g_pos_intervals(search_interval, propagator, event_detector).invert()
-
-
