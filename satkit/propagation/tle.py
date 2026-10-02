@@ -304,7 +304,7 @@ class TleFactory:
             om_dot_next = OrbitUtils.compute_raan_drift_rate(sma, e, i).m_as("rad/s")
 
             d_om = om_dot_next - om_dot
-            di = -d_om / (om_dot * np.tan(i))
+            di = +d_om / (om_dot * np.tan(i))
             i = i + di
             om_dot = om_dot_next
 
